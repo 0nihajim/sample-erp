@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 报溢单Controller类
+ * 過剰在庫伝票Controllerクラス
  *
  * @author Wensen Ma
  */
@@ -54,11 +54,11 @@ public class OverflowListAdminController {
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         dateFormat.setLenient(true);
-        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));   //true:允许输入空值，false:不能为空值
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));   //true:空値入力可能、false:空値不可
     }
 
     /**
-     * 根据条件分页查询报溢单信息
+     * 条件に基づいて過剰在庫伝票情報をページング検索
      *
      * @param overflowList
      * @param page
@@ -67,7 +67,7 @@ public class OverflowListAdminController {
      * @throws Exception
      */
     @RequestMapping("/list")
-    @RequiresPermissions(value = {"报损报溢查询"})
+    @RequiresPermissions(value = {"過不足照会"})
     public Map<String, Object> list(OverflowList overflowList) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         List<OverflowList> overflowListList = overflowListService.list(overflowList, Direction.DESC, "overflowDate");
@@ -76,14 +76,14 @@ public class OverflowListAdminController {
     }
 
     /**
-     * 根据报溢单id查询所有报溢单商品
+     * 過剰在庫伝票IDに基づいて全ての過剰在庫商品を検索
      *
      * @param overflowListId
      * @return
      * @throws Exception
      */
     @RequestMapping("/listGoods")
-    @RequiresPermissions(value = {"报损报溢查询"})
+    @RequiresPermissions(value = {"過不足照会"})
     public Map<String, Object> listGoods(Integer overflowListId) throws Exception {
         if (overflowListId == null) {
             return null;
@@ -96,7 +96,7 @@ public class OverflowListAdminController {
 
 
     /**
-     * 获取报溢单号
+     * 過剰在庫伝票番号を取得
      *
      * @param type
      * @return
@@ -104,12 +104,12 @@ public class OverflowListAdminController {
      */
     @ResponseBody
     @RequestMapping("/getOverflowNumber")
-    @RequiresPermissions(value = {"商品报溢"})
+    @RequiresPermissions(value = {"商品過剰登録"})
     public String genBillCode(String type) throws Exception {
         StringBuffer biilCodeStr = new StringBuffer();
         biilCodeStr.append("BY");
-        biilCodeStr.append(DateUtil.getCurrentDateStr()); // 拼接当前日期
-        String overflowNumber = overflowListService.getTodayMaxOverflowNumber(); // 获取当天最大的报溢单号
+        biilCodeStr.append(DateUtil.getCurrentDateStr()); // 現在日付を連結
+        String overflowNumber = overflowListService.getTodayMaxOverflowNumber(); // 当日の最大過剰在庫伝票番号を取得
         if (overflowNumber != null) {
             biilCodeStr.append(StringUtil.formatCode(overflowNumber));
         } else {
@@ -119,7 +119,7 @@ public class OverflowListAdminController {
     }
 
     /**
-     * 添加报溢单 以及所有报溢单商品 以及 修改商品的成本均价
+     * 過剰在庫伝票及び全ての過剰在庫商品を追加、商品の平均原価を修正
      *
      * @param overflowList
      * @param goodsJson
@@ -128,15 +128,15 @@ public class OverflowListAdminController {
      */
     @ResponseBody
     @RequestMapping("/save")
-    @RequiresPermissions(value = {"商品报溢"})
+    @RequiresPermissions(value = {"商品過剰登録"})
     public Map<String, Object> save(OverflowList overflowList, String goodsJson) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
-        overflowList.setUser(userService.findByUserName((String) SecurityUtils.getSubject().getPrincipal())); // 设置操作用户
+        overflowList.setUser(userService.findByUserName((String) SecurityUtils.getSubject().getPrincipal())); // 操作ユーザーを設定
         Gson gson = new Gson();
         List<OverflowListGoods> plgList = gson.fromJson(goodsJson, new TypeToken<List<OverflowListGoods>>() {
         }.getType());
         overflowListService.save(overflowList, plgList);
-        logService.save(new Log(Log.ADD_ACTION, "添加报溢单"));
+        logService.save(new Log(Log.ADD_ACTION, "過剰在庫伝票を追加"));
         resultMap.put("success", true);
         return resultMap;
     }

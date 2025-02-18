@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 后台管理角色Controller
+ * バックエンド管理ロールController
  *
  * @author Wensen Ma
  */
@@ -46,22 +46,22 @@ public class RoleAdminController {
     private LogService logService;
 
     /**
-     * 查询所有角色
+     * 全てのロールを検索
      *
      * @return
      * @throws Exception
      */
     @RequestMapping("/listAll")
-    @RequiresPermissions(value = {"角色管理"})
+    @RequiresPermissions(value = {"ロール管理"})
     public Map<String, Object> listAll() throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("rows", roleService.listAll());
-        logService.save(new Log(Log.SEARCH_ACTION, "查询所有角色信息")); // 写入日志
+        logService.save(new Log(Log.SEARCH_ACTION, "全てのロール情報を検索")); // ログを書き込む
         return resultMap;
     }
 
     /**
-     * 分页查询角色信息
+     * ロール情報をページング検索
      *
      * @param user
      * @param page
@@ -70,31 +70,31 @@ public class RoleAdminController {
      * @throws Exception
      */
     @RequestMapping("/list")
-    @RequiresPermissions(value = {"角色管理"})
+    @RequiresPermissions(value = {"ロール管理"})
     public Map<String, Object> list(Role role, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "rows", required = false) Integer rows) throws Exception {
         List<Role> roleList = roleService.list(role, page, rows, Direction.ASC, "id");
         Long total = roleService.getCount(role);
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("rows", roleList);
         resultMap.put("total", total);
-        logService.save(new Log(Log.SEARCH_ACTION, "查询角色信息")); // 写入日志
+        logService.save(new Log(Log.SEARCH_ACTION, "ロール情報を検索")); // ログを書き込む
         return resultMap;
     }
 
     /**
-     * 添加或者修改角色信息
+     * ロール情報を追加または修正
      *
      * @param role
      * @return
      * @throws Exception
      */
     @RequestMapping("/save")
-    @RequiresPermissions(value = {"角色管理"})
+    @RequiresPermissions(value = {"ロール管理"})
     public Map<String, Object> save(Role role) throws Exception {
-        if (role.getId() != null) { // 写入日志
-            logService.save(new Log(Log.UPDATE_ACTION, "更新角色信息" + role));
+        if (role.getId() != null) { // ログを書き込む
+            logService.save(new Log(Log.UPDATE_ACTION, "ロール情報を更新" + role));
         } else {
-            logService.save(new Log(Log.ADD_ACTION, "添加角色信息" + role));
+            logService.save(new Log(Log.ADD_ACTION, "ロール情報を追加" + role));
         }
         Map<String, Object> resultMap = new HashMap<>();
         roleService.save(role);
@@ -104,7 +104,7 @@ public class RoleAdminController {
 
 
     /**
-     * 删除角色信息
+     * ロール情報を削除
      *
      * @param id
      * @param response
@@ -112,18 +112,18 @@ public class RoleAdminController {
      * @throws Exception
      */
     @RequestMapping("/delete")
-    @RequiresPermissions(value = {"角色管理"})
+    @RequiresPermissions(value = {"ロール管理"})
     public Map<String, Object> delete(Integer id) throws Exception {
-        logService.save(new Log(Log.DELETE_ACTION, "删除角色信息" + roleService.findById(id)));  // 写入日志
+        logService.save(new Log(Log.DELETE_ACTION, "ロール情報を削除" + roleService.findById(id)));  // ログを書き込む
         Map<String, Object> resultMap = new HashMap<>();
-        userRoleService.deleteByRoleId(id); // 删除用户角色关联信息
+        userRoleService.deleteByRoleId(id); // ユーザーロール関連情報を削除
         roleService.delete(id);
         resultMap.put("success", true);
         return resultMap;
     }
 
     /**
-     * 根据父节点获取所有复选框权限菜单树
+     * 親ノードに基づいて全てのチェックボックス権限メニューツリーを取得
      *
      * @param parentId
      * @param roleId
@@ -131,9 +131,9 @@ public class RoleAdminController {
      * @throws Exception
      */
     @PostMapping("/loadCheckMenuInfo")
-    @RequiresPermissions(value = {"角色管理"})
+    @RequiresPermissions(value = {"ロール管理"})
     public String loadCheckMenuInfo(Integer parentId, Integer roleId) throws Exception {
-        List<Menu> menuList = menuService.findByRoleId(roleId); // 根据角色查询所有权限菜单信息
+        List<Menu> menuList = menuService.findByRoleId(roleId); // ロールに基づいて全ての権限メニュー情報を検索
         List<Integer> menuIdList = new LinkedList<Integer>();
         for (Menu menu : menuList) {
             menuIdList.add(menu.getId());
@@ -142,7 +142,7 @@ public class RoleAdminController {
     }
 
     /**
-     * 根据父节点ID和权限菜单ID集合获取复选框菜单节点
+     * 親ノードIDと権限メニューIDリストに基づいてチェックボックスメニューノードを取得
      *
      * @param parentId
      * @param menuIdList
@@ -162,7 +162,7 @@ public class RoleAdminController {
     }
 
     /**
-     * 根据父节点ID和权限菜单ID集合获取复选框菜单节点
+     * 親ノードIDと権限メニューIDリストに基づいてチェックボックスメニューノードを取得
      *
      * @param parentId
      * @param menuIdList
@@ -174,12 +174,12 @@ public class RoleAdminController {
         for (Menu menu : menuList) {
             JsonObject jsonObject = new JsonObject();
             int menuId = menu.getId();
-            jsonObject.addProperty("id", menuId); // 节点id
-            jsonObject.addProperty("text", menu.getName()); // 节点名称
+            jsonObject.addProperty("id", menuId); // ノードid
+            jsonObject.addProperty("text", menu.getName()); // ノード名
             if (menu.getState() == 1) {
-                jsonObject.addProperty("state", "closed"); // 根节点
+                jsonObject.addProperty("state", "closed"); // ルートノード
             } else {
-                jsonObject.addProperty("state", "open"); // 叶子节点
+                jsonObject.addProperty("state", "open"); // リーフノード
             }
             if (menuIdList.contains(menuId)) {
                 jsonObject.addProperty("checked", true);
@@ -191,7 +191,7 @@ public class RoleAdminController {
     }
 
     /**
-     * 保存角色权限设置
+     * ロール権限設定を保存
      *
      * @param menuIds
      * @param roleId
@@ -199,13 +199,13 @@ public class RoleAdminController {
      * @throws Exception
      */
     @RequestMapping("/saveMenuSet")
-    @RequiresPermissions(value = {"角色管理"})
+    @RequiresPermissions(value = {"ロール管理"})
     public Map<String, Object> saveMenuSet(String menuIds, Integer roleId) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
-        roleMenuService.deleteByRoleId(roleId); // 根据角色id删除所有角色权限关联实体
+        roleMenuService.deleteByRoleId(roleId); // ロールIDに基づいて全てのロール権限関連エンティティを削除
         if (StringUtil.isNotEmpty(menuIds)) {
             String[] idsStr = menuIds.split(",");
-            for (int i = 0; i < idsStr.length; i++) { // 然后添加所有角色权限关联实体
+            for (int i = 0; i < idsStr.length; i++) { // その後、全てのロール権限関連エンティティを追加
                 RoleMenu roleMenu = new RoleMenu();
                 roleMenu.setRole(roleService.findById(roleId));
                 roleMenu.setMenu(menuService.findById(Integer.parseInt(idsStr[i])));
@@ -213,7 +213,7 @@ public class RoleAdminController {
             }
         }
         resultMap.put("success", true);
-        logService.save(new Log(Log.ADD_ACTION, "保存角色权限设置"));  // 写入日志
+        logService.save(new Log(Log.ADD_ACTION, "ロール権限設定を保存"));  // ログを書き込む
         return resultMap;
     }
 }

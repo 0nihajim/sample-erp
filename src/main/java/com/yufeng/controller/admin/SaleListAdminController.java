@@ -29,7 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * 销售单Controller类
+ * 販売伝票Controllerクラス
  *
  * @author Wensen Ma
  */
@@ -53,11 +53,11 @@ public class SaleListAdminController {
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         dateFormat.setLenient(true);
-        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));   //true:允许输入空值，false:不能为空值
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));   //true:空値入力可能、false:空値不可
     }
 
     /**
-     * 根据条件分页查询销售单信息
+     * 条件に基づいて販売伝票情報をページング検索
      *
      * @param saleList
      * @param page
@@ -66,7 +66,7 @@ public class SaleListAdminController {
      * @throws Exception
      */
     @RequestMapping("/list")
-    @RequiresPermissions(value = {"销售单据查询"})
+    @RequiresPermissions(value = {"販売伝票照会"})
     public Map<String, Object> list(SaleList saleList) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         List<SaleList> saleListList = saleListService.list(saleList, Direction.DESC, "saleDate");
@@ -75,14 +75,14 @@ public class SaleListAdminController {
     }
 
     /**
-     * 根据销售单id查询所有销售单商品
+     * 販売伝票IDに基づいて全ての販売商品を検索
      *
      * @param saleListId
      * @return
      * @throws Exception
      */
     @RequestMapping("/listGoods")
-    @RequiresPermissions(value = {"销售单据查询"})
+    @RequiresPermissions(value = {"販売伝票照会"})
     public Map<String, Object> listGoods(Integer saleListId) throws Exception {
         if (saleListId == null) {
             return null;
@@ -94,7 +94,7 @@ public class SaleListAdminController {
     }
 
     /**
-     * 客户统计 获取销售单的所有商品信息
+     * 顧客統計 販売伝票の全ての商品情報を取得
      *
      * @param saleList
      * @param saleListGoods
@@ -102,7 +102,7 @@ public class SaleListAdminController {
      * @throws Exception
      */
     @RequestMapping("/listCount")
-    @RequiresPermissions(value = {"客户统计"})
+    @RequiresPermissions(value = {"顧客統計"})
     public Map<String, Object> listCount(SaleList saleList, SaleListGoods saleListGoods) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         List<SaleList> saleListList = saleListService.list(saleList, Direction.DESC, "saleDate");
@@ -119,7 +119,7 @@ public class SaleListAdminController {
     }
 
     /**
-     * 获取销售单号
+     * 販売伝票番号を取得
      *
      * @param type
      * @return
@@ -127,12 +127,12 @@ public class SaleListAdminController {
      */
     @ResponseBody
     @RequestMapping("/getSaleNumber")
-    @RequiresPermissions(value = {"销售出库"})
+    @RequiresPermissions(value = {"販売出庫"})
     public String genBillCode(String type) throws Exception {
         StringBuffer biilCodeStr = new StringBuffer();
         biilCodeStr.append("XS");
-        biilCodeStr.append(DateUtil.getCurrentDateStr()); // 拼接当前日期
-        String saleNumber = saleListService.getTodayMaxSaleNumber(); // 获取当天最大的销售单号
+        biilCodeStr.append(DateUtil.getCurrentDateStr()); // 現在日付を連結
+        String saleNumber = saleListService.getTodayMaxSaleNumber(); // 当日の最大販売伝票番号を取得
         if (saleNumber != null) {
             biilCodeStr.append(StringUtil.formatCode(saleNumber));
         } else {
@@ -142,7 +142,7 @@ public class SaleListAdminController {
     }
 
     /**
-     * 修改销售单的支付状态
+     * 販売伝票の支払状態を修正
      *
      * @param id
      * @return
@@ -150,18 +150,18 @@ public class SaleListAdminController {
      */
     @ResponseBody
     @RequestMapping("/update")
-    @RequiresPermissions(value = {"客户统计"})
+    @RequiresPermissions(value = {"顧客統計"})
     public Map<String, Object> update(Integer id) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         SaleList saleList = saleListService.findById(id);
-        saleList.setState(1); // 修改成支付状态
+        saleList.setState(1); // 支払状態に修正
         saleListService.update(saleList);
         resultMap.put("success", true);
         return resultMap;
     }
 
     /**
-     * 添加销售单 以及所有销售单商品
+     * 販売伝票及び全ての販売商品を追加
      *
      * @param saleList
      * @param goodsJson
@@ -170,38 +170,38 @@ public class SaleListAdminController {
      */
     @ResponseBody
     @RequestMapping("/save")
-    @RequiresPermissions(value = {"销售出库"})
+    @RequiresPermissions(value = {"販売出庫"})
     public Map<String, Object> save(SaleList saleList, String goodsJson) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
-        saleList.setUser(userService.findByUserName((String) SecurityUtils.getSubject().getPrincipal())); // 设置操作用户
+        saleList.setUser(userService.findByUserName((String) SecurityUtils.getSubject().getPrincipal())); // 操作ユーザーを設定
         Gson gson = new Gson();
         List<SaleListGoods> plgList = gson.fromJson(goodsJson, new TypeToken<List<SaleListGoods>>() {
         }.getType());
         saleListService.save(saleList, plgList);
-        logService.save(new Log(Log.ADD_ACTION, "添加销售单"));
+        logService.save(new Log(Log.ADD_ACTION, "販売伝票を追加"));
         resultMap.put("success", true);
         return resultMap;
     }
 
     /**
-     * 根据id删除销售单信息 包括销售单里的商品
+     * IDに基づいて販売伝票情報を削除 販売伝票内の商品を含む
      *
      * @param id
      * @return
      * @throws Exception
      */
     @RequestMapping("/delete")
-    @RequiresPermissions(value = {"销售单据查询"})
+    @RequiresPermissions(value = {"販売伝票照会"})
     public Map<String, Object> delete(Integer id) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         saleListService.delete(id);
-        logService.save(new Log(Log.DELETE_ACTION, "删除销售单信息" + saleListService.findById(id)));  // 写入日志
+        logService.save(new Log(Log.DELETE_ACTION, "販売伝票情報を削除" + saleListService.findById(id)));  // ログを書き込む
         resultMap.put("success", true);
         return resultMap;
     }
 
     /**
-     * 按日统计分析
+     * 日別統計分析
      *
      * @param begin
      * @param end
@@ -209,7 +209,7 @@ public class SaleListAdminController {
      * @throws Exception
      */
     @RequestMapping("/countSaleByDay")
-    @RequiresPermissions(value = {"按日统计分析"})
+    @RequiresPermissions(value = {"日別統計分析"})
     public Map<String, Object> countSaleByDay(String begin, String end) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         List<SaleCount> scdList = new ArrayList<SaleCount>();
@@ -222,7 +222,7 @@ public class SaleListAdminController {
             for (Object o : ll) {
                 Object[] oo = (Object[]) o;
                 String dd = oo[2].toString().substring(0, 10);
-                if (dd.equals(data)) { // 存在
+                if (dd.equals(data)) { // 存在する場合
                     scd.setAmountCost(MathUtil.format2Bit(Float.parseFloat(oo[0].toString())));
                     scd.setAmountSale(MathUtil.format2Bit(Float.parseFloat(oo[1].toString())));
                     scd.setAmountProfit(MathUtil.format2Bit(scd.getAmountSale() - scd.getAmountCost()));
@@ -242,7 +242,7 @@ public class SaleListAdminController {
     }
 
     /**
-     * 按月统计分析
+     * 月別統計分析
      *
      * @param begin
      * @param end
@@ -250,7 +250,7 @@ public class SaleListAdminController {
      * @throws Exception
      */
     @RequestMapping("/countSaleByMonth")
-    @RequiresPermissions(value = {"按月统计分析"})
+    @RequiresPermissions(value = {"月別統計分析"})
     public Map<String, Object> countSaleByMonth(String begin, String end) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         List<SaleCount> scList = new ArrayList<SaleCount>();
@@ -263,7 +263,7 @@ public class SaleListAdminController {
             for (Object o : ll) {
                 Object[] oo = (Object[]) o;
                 String dd = oo[2].toString().substring(0, 7);
-                if (dd.equals(data)) { // 存在
+                if (dd.equals(data)) { // 存在する場合
                     sc.setAmountCost(MathUtil.format2Bit(Float.parseFloat(oo[0].toString())));
                     sc.setAmountSale(MathUtil.format2Bit(Float.parseFloat(oo[1].toString())));
                     sc.setAmountProfit(MathUtil.format2Bit(sc.getAmountSale() - sc.getAmountCost()));

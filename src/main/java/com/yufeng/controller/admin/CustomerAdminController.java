@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 后台管理客户Controller
+ * バックエンド顧客管理Controller
  *
  * @author Wensen Ma
  */
@@ -33,7 +33,7 @@ public class CustomerAdminController {
     private LogService logService;
 
     /**
-     * 分页查询客户信息
+     * 顧客情報をページング検索
      *
      * @param customer
      * @param page
@@ -42,19 +42,19 @@ public class CustomerAdminController {
      * @throws Exception
      */
     @RequestMapping("/list")
-    @RequiresPermissions(value = {"客户管理"})
+    @RequiresPermissions(value = {"顧客管理"})
     public Map<String, Object> list(Customer customer, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "rows", required = false) Integer rows) throws Exception {
         List<Customer> customerList = customerService.list(customer, page, rows, Direction.ASC, "id");
         Long total = customerService.getCount(customer);
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("rows", customerList);
         resultMap.put("total", total);
-        logService.save(new Log(Log.SEARCH_ACTION, "查询客户信息")); // 写入日志
+        logService.save(new Log(Log.SEARCH_ACTION, "顧客情報を検索")); // ログを書き込む
         return resultMap;
     }
 
     /**
-     * 下拉框模糊查询
+     * ドロップダウンリストのあいまい検索
      *
      * @param q
      * @return
@@ -62,7 +62,7 @@ public class CustomerAdminController {
      */
     @ResponseBody
     @RequestMapping("/comboList")
-    @RequiresPermissions(value = {"销售出库", "客户退货", "销售单据查询", "客户退货查询"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"販売出庫", "顧客返品", "販売伝票照会", "顧客返品照会"}, logical = Logical.OR)
     public List<Customer> comboList(String q) throws Exception {
         if (q == null) {
             q = "";
@@ -72,19 +72,19 @@ public class CustomerAdminController {
 
 
     /**
-     * 添加或者修改客户信息
+     * 顧客情報を追加または更新
      *
      * @param customer
      * @return
      * @throws Exception
      */
     @RequestMapping("/save")
-    @RequiresPermissions(value = {"客户管理"})
+    @RequiresPermissions(value = {"顧客管理"})
     public Map<String, Object> save(Customer customer) throws Exception {
-        if (customer.getId() != null) { // 写入日志
-            logService.save(new Log(Log.UPDATE_ACTION, "更新客户信息" + customer));
+        if (customer.getId() != null) {
+            logService.save(new Log(Log.UPDATE_ACTION, "顧客情報を更新" + customer));
         } else {
-            logService.save(new Log(Log.ADD_ACTION, "添加客户信息" + customer));
+            logService.save(new Log(Log.ADD_ACTION, "顧客情報を追加" + customer));
         }
         Map<String, Object> resultMap = new HashMap<>();
         customerService.save(customer);
@@ -94,7 +94,7 @@ public class CustomerAdminController {
 
 
     /**
-     * 删除客户信息
+     * 顧客情報を削除
      *
      * @param id
      * @param response
@@ -102,13 +102,13 @@ public class CustomerAdminController {
      * @throws Exception
      */
     @RequestMapping("/delete")
-    @RequiresPermissions(value = {"客户管理"})
+    @RequiresPermissions(value = {"顧客管理"})
     public Map<String, Object> delete(String ids) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         String[] idsStr = ids.split(",");
         for (int i = 0; i < idsStr.length; i++) {
             int id = Integer.parseInt(idsStr[i]);
-            logService.save(new Log(Log.DELETE_ACTION, "删除客户信息" + customerService.findById(id)));  // 写入日志
+            logService.save(new Log(Log.DELETE_ACTION, "顧客情報を削除" + customerService.findById(id)));
             customerService.delete(id);
         }
         resultMap.put("success", true);

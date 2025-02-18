@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>后台管理-进销存管理系统</title>
+    <title>バックエンド管理-在庫管理システム</title>
     <link href="/static/jquery-easyui-1.3.3/themes/default/easyui.css" rel="stylesheet" type="text/css"></link>
     <link href="/static/jquery-easyui-1.3.3/themes/icon.css" rel="stylesheet" type="text/css"></link>
     <style type="text/css">
@@ -35,12 +35,12 @@
 		this.year = date.getFullYear();
 		this.month = date.getMonth() + 1;
 		this.date = date.getDate();
-		this.day = new Array("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六")[date.getDay()];
+		this.day = new Array("日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日")[date.getDay()];
 		this.hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
 		this.minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
 		this.second = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
 		
-		$("#clock").text("现在是:" + this.year + "年" + this.month + "月" + this.date + "日 " + this.hour + ":" + this.minute + ":" + this.second + " " + this.day);
+		$("#clock").text("現在時刻:" + this.year + "年" + this.month + "月" + this.date + "日 " + this.hour + ":" + this.minute + ":" + this.second + " " + this.day);
 	}
 	
 	window.setInterval("showTime()",1000);
@@ -49,13 +49,13 @@
 		
 		var content="<iframe frameborder=0 scrolling='auto' style='width:100%;height:99%' src='/common/stockSearch.html'></iframe>";
 		$("#tabs").tabs("add",{
-			title:"首页",
+			title:"ホーム",
 			iconCls:"menu-25",
 			closable:false,
 			content:content
 		});
 		
-		$("#userInfo").load("/user/loadUserInfo"); // 加载用户信息
+		$("#userInfo").load("/user/loadUserInfo"); // ユーザー情報を読み込む
 		
 		$("#tree").tree({
 			lines:true,
@@ -89,7 +89,7 @@
 		}
 		
 		function logout(){
-			$.messager.confirm("系统提示","您确定要退出系统吗？",function(r){
+			$.messager.confirm("システム通知","ログアウトしますか？",function(r){
 				if(r){
 					window.location.href='/admin/user/logout';
 				} 
@@ -97,12 +97,12 @@
 		}
 		
 		function openPasswordModifyDialog(){
-			$("#dlg").dialog("open").dialog("setTitle","修改密码");
+			$("#dlg").dialog("open").dialog("setTitle","パスワード変更");
 			url="/admin/user/modifyPassword";
 		}
 		
 		
-		// 监听右键事件，创建右键菜单
+		// 右クリックイベントを監視し、コンテキストメニューを作成
         $('#tabs').tabs({
             onContextMenu:function(e, title,index){
                 e.preventDefault();
@@ -114,7 +114,7 @@
                 }
             }
         });
-        // 右键菜单click
+        // コンテキストメニューのクリック
         $("#menu").menu({
             onClick : function (item) {
                 closeTab(this, item.name);
@@ -133,32 +133,32 @@
             var curTabTitle = $(menu).data("tabTitle");
             var curTabIndex = $("#tabs").tabs("getTabIndex", $("#tabs").tabs("getTab", curTabTitle));
             switch (type) {
-           		case "1": // 刷新当前标签页
+           		case "1": // 現在のタブを更新
     	            var panel = $("#tabs").tabs("getTab", curTabTitle).panel("refresh");
     	            break;
-                case "2": // 关闭当前标签页
+                case "2": // 現在のタブを閉じる
                     $("#tabs").tabs("close", curTabIndex);
                     return false;
                     break;
-                case "3": // 关闭全部标签页
+                case "3": // すべてのタブを閉じる
                     for (var i = 0; i < allTabtitle.length; i++) {
                         $('#tabs').tabs('close', allTabtitle[i]);
                     }
                     break;
-                case "4": // 关闭其他标签页
+                case "4": // 他のタブを閉じる
                     for (var i = 0; i < allTabtitle.length; i++) {
                         if (curTabTitle != allTabtitle[i])
                             $('#tabs').tabs('close', allTabtitle[i]);
                     }
                     $('#tabs').tabs('select', curTabTitle);
                     break;
-                case "5": // 关闭右侧标签页
+                case "5": // 右側のタブを閉じる
                     for (var i = curTabIndex; i < allTabtitle.length; i++) {
                         $('#tabs').tabs('close', allTabtitle[i]);
                     }
                     $('#tabs').tabs('select', curTabTitle);
                     break;
-                case "6": // 关闭左侧标签页
+                case "6": // 左側のタブを閉じる
                     for (var i = 0; i < curTabIndex - 1; i++) {
                         $('#tabs').tabs('close', allTabtitle[i]);
                     }
@@ -183,7 +183,7 @@
 					return false;
 				}
 				if(newPassword!=newPassword2){
-					$.messager.alert("系统提示","确认密码输入错误！");
+					$.messager.alert("システム通知","確認パスワードが一致しません！");
 					return false;
 				}
 				return true;
@@ -191,11 +191,11 @@
 			success:function(result){
 				var result=eval('('+result+')');
 				if(result.success){
-					$.messager.alert("系统提示","密码修改成功，下一次登录生效！");
+					$.messager.alert("システム通知","パスワードを変更しました。次回ログイン時から有効になります！");
 					resetValue();
 					$("#dlg").dialog("close");
 				}else{
-					$.messager.alert("系统提示","密码修改失败！");
+					$.messager.alert("システム通知","パスワードの変更に失敗しました！");
 					return;
 				}
 			}
@@ -237,7 +237,7 @@
 
     </div>
 </div>
-<div iconCls="icon-navigation" region="west" split="true" style="width: 200px" title="导航菜单">
+<div iconCls="icon-navigation" region="west" split="true" style="width: 200px" title="ナビゲーションメニュー">
     <ul class="easyui-tree" id="tree" style="padding: 10px"></ul>
 </div>
 <div align="center" region="south" style="height: 30px;padding: 5px">
@@ -251,12 +251,12 @@
     <form id="fm" method="post">
         <table cellspacing="8px">
             <tr>
-                <td>新密码：</td>
+                <td>新しいパスワード：</td>
                 <td><input class="easyui-validatebox" id="newPassword" name="newPassword" required="true"
                            style="width: 200px" type="password"/></td>
             </tr>
             <tr>
-                <td>确认新密码：</td>
+                <td>新しいパスワード(確認)：</td>
                 <td><input class="easyui-validatebox" id="newPassword2" name="newPassword2" required="true"
                            style="width: 200px" type="password"/></td>
             </tr>
@@ -266,18 +266,18 @@
 
 <div id="dlg-buttons">
     <a class="easyui-linkbutton" href="javascript:modifyPassword()" iconCls="icon-ok">保存</a>
-    <a class="easyui-linkbutton" href="javascript:closePasswordModifyDialog()" iconCls="icon-cancel">关闭</a>
+    <a class="easyui-linkbutton" href="javascript:closePasswordModifyDialog()" iconCls="icon-cancel">閉じる</a>
 </div>
 
 
 <div class="easyui-menu" id="menu">
-    <div data-options="name:1,iconCls:'icon-refresh'" id="mm-tabrefresh"> 刷新当前标签页</div>
+    <div data-options="name:1,iconCls:'icon-refresh'" id="mm-tabrefresh">現在のタブを更新</div>
     <div class="menu-sep"></div>
-    <div data-options="name:2,iconCls:'icon-closetab'" id="mm-tabclose">关闭当前标签页</div>
-    <div data-options="name:3,iconCls:'icon-closealltab'" id="mm-tabcloseall">关闭全部标签页</div>
-    <div data-options="name:4,iconCls:'icon-closeothertab'" id="mm-tabcloseother">关闭其他标签页</div>
-    <div data-options="name:5,iconCls:'icon-closerighttab'" id="mm-tabcloseright">关闭右侧标签页</div>
-    <div data-options="name:6,iconCls:'icon-closelefttab'" id="mm-tabcloseleft">关闭左侧标签页</div>
+    <div data-options="name:2,iconCls:'icon-closetab'" id="mm-tabclose">現在のタブを閉じる</div>
+    <div data-options="name:3,iconCls:'icon-closealltab'" id="mm-tabcloseall">すべてのタブを閉じる</div>
+    <div data-options="name:4,iconCls:'icon-closeothertab'" id="mm-tabcloseother">他のタブを閉じる</div>
+    <div data-options="name:5,iconCls:'icon-closerighttab'" id="mm-tabcloseright">右側のタブを閉じる</div>
+    <div data-options="name:6,iconCls:'icon-closelefttab'" id="mm-tabcloseleft">左側のタブを閉じる</div>
 </div>
 
 </body>

@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>后台登录-进销存管理系统</title>
+    <title>バックエンド管理-在庫管理システム</title>
     <meta content="DeathGhost" name="author"/>
     <link href="static/css/style.css" rel="stylesheet" type="text/css"/>
     <style>
@@ -18,7 +18,7 @@ canvas{z-index:-1;position:absolute;}
     <script>
 
 	$(document).ready(function() {
-	  //粒子背景特效
+	  //パーティクル背景エフェクト
 	  $('body').particleground({
 	    dotColor: '#5cbdaa',
 	    lineColor: '#5cbdaa'
@@ -72,34 +72,34 @@ canvas{z-index:-1;position:absolute;}
 <body>
 <dl class="admin_login">
     <dt>
-        <strong>进销存管理系统</strong>
+        <strong>在庫管理システム</strong>
         <em>Enterprise Resource Planning System</em>
     </dt>
     <dd class="user_icon">
-        <input class="login_txtbx" id="userName" placeholder="账号" type="text"/>
+        <input class="login_txtbx" id="userName" placeholder="アカウント" type="text"/>
     </dd>
     <dd class="pwd_icon">
-        <input class="login_txtbx" id="password" placeholder="密码" type="password"/>
+        <input class="login_txtbx" id="password" placeholder="パスワード" type="password"/>
     </dd>
     <dd class="val_icon">
         <div class="checkcode">
-            <input class="login_txtbx" id="imageCode" maxlength="4" name="imageCode" placeholder="验证码" type="text">
-            <img id="imgObj" onclick="changeImg()" src="/drawImage" title="看不清，换一张"/>
+            <input class="login_txtbx" id="imageCode" maxlength="4" name="imageCode" placeholder="認証コード" type="text">
+            <img id="imgObj" onclick="changeImg()" src="/drawImage" title="見にくい場合は変更"/>
         </div>
     </dd>
     <dd>
-        <input class="submit_btn" id="loginBtn" type="button" value="立即登陆"/>
+        <input class="submit_btn" id="loginBtn" type="button" value="ログイン"/>
     </dd>
     <dd>
     </dd>
 </dl>
 <div class="white_content" id="light">
-    <p>请选择一个角色登录系统</p>
+    <p>ログインするロールを選択してください</p>
     <br/>
     <div id="roleList">
     </div>
     <br/>
-    <input onclick="saveRole()" type="button" value="提交"/>
+    <input onclick="saveRole()" type="button" value="送信"/>
 </div>
 <div class="black_overlay" id="fade">
 </div>

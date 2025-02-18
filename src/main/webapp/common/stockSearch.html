@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>当前库存查询</title>
+    <title>在庫照会</title>
     <link href="/static/jquery-easyui-1.3.3/themes/default/easyui.css" rel="stylesheet" type="text/css"></link>
     <link href="/static/jquery-easyui-1.3.3/themes/icon.css" rel="stylesheet" type="text/css"></link>
     <script src="/static/jquery-easyui-1.3.3/jquery.min.js" type="text/javascript"></script>
@@ -33,7 +33,7 @@
 	}
 	 
 	function chooseGoodsType(){
-		$("#dlg2").dialog("open").dialog("setTitle","选择商品类别");
+		$("#dlg2").dialog("open").dialog("setTitle","商品カテゴリの選択");
 		$("#typeTree").tree({
 			url:'/admin/goodsType/loadTreeInfo',
 			onLoadSuccess:function(node, data){
@@ -44,7 +44,7 @@
 	}
 	
 	function saveGoodsTypeChoose(){
-		var node = $('#typeTree').tree('getSelected'); // 获取选中节点
+		var node = $('#typeTree').tree('getSelected'); // 選択したノードを取得
 		$("#typeId").val(node.id);
 		$("#typeName").val(node.text);
 		$("#dlg2").dialog("close");
@@ -67,34 +67,34 @@
 <body style="margin: 1px">
 <table class="easyui-datagrid" fit="true" fitColumns="true"
        id="dg" pageSize=20 pagination="true" rownumbers="true"
-       title="当前库存查询" toolbar="#tb" url="/admin/goods/listInventory">
+       title="在庫照会" toolbar="#tb" url="/admin/goods/listInventory">
     <thead>
     <tr>
-        <th align="center" field="code" width="30">商品编码</th>
-        <th align="center" field="name" width="150">商品名称</th>
-        <th align="center" field="typeName" formatter="formatGoodsTypeName" width="50">类别</th>
-        <th align="center" field="model" width="50">型号</th>
-        <th align="center" field="inventoryQuantity" width="50">库存数量</th>
-        <th align="center" field="saleTotal" width="50">销售总数</th>
-        <th align="right" field="lastPurchasingPrice" formatter="formatLastPurchasingPrice" width="50">上次进价</th>
-        <th align="right" field="purchasingPrice" formatter="formatPurchasingPrice" width="50">成本均价</th>
-        <th align="right" field="sellingPrice" formatter="formatSellingPrice" width="50">销售价</th>
-        <th align="right" field="amount" formatter="formatAmount" width="60">库存总值</th>
-        <th align="center" field="unit" width="50">单位</th>
-        <th align="center" field="producer" width="200">生产产商</th>
-        <th align="center" field="remarks" hidden=true width="150">备注</th>
+        <th align="center" field="code" width="30">商品コード</th>
+        <th align="center" field="name" width="150">商品名</th>
+        <th align="center" field="typeName" formatter="formatGoodsTypeName" width="50">カテゴリ</th>
+        <th align="center" field="model" width="50">型番</th>
+        <th align="center" field="inventoryQuantity" width="50">在庫数</th>
+        <th align="center" field="saleTotal" width="50">販売数</th>
+        <th align="right" field="lastPurchasingPrice" formatter="formatLastPurchasingPrice" width="50">前回仕入価格</th>
+        <th align="right" field="purchasingPrice" formatter="formatPurchasingPrice" width="50">平均原価</th>
+        <th align="right" field="sellingPrice" formatter="formatSellingPrice" width="50">販売価格</th>
+        <th align="right" field="amount" formatter="formatAmount" width="60">在庫金額</th>
+        <th align="center" field="unit" width="50">単位</th>
+        <th align="center" field="producer" width="200">メーカー</th>
+        <th align="center" field="remarks" hidden=true width="150">備考</th>
     </tr>
     </thead>
 </table>
 
 <div id="tb">
     <div style="padding: 5px">
-        &nbsp;商品类别&nbsp;
+        &nbsp;商品カテゴリ&nbsp;
         <input id="typeId" type="hidden"/>
         <input id="typeName" onclick="chooseGoodsType()" readonly="readonly" style="width: 90px;" type="text"/>
-        &nbsp;商品编码或者名称：&nbsp;<input id="codeOrName" onkeydown="if(event.keyCode==13) searchStock()" size="20"
+        &nbsp;商品コードまたは商品名：&nbsp;<input id="codeOrName" onkeydown="if(event.keyCode==13) searchStock()" size="20"
                                     type="text"/>
-        <a class="easyui-linkbutton" href="javascript:searchStock()" iconCls="icon-search" plain="true">搜索</a>
+        <a class="easyui-linkbutton" href="javascript:searchStock()" iconCls="icon-search" plain="true">検索</a>
     </div>
 </div>
 
@@ -107,9 +107,9 @@
 </div>
 
 <div id="dlg-buttons2">
-    <a class="easyui-linkbutton" href="javascript:saveGoodsTypeChoose()" iconCls="icon-ok" plain="true">选择</a>
+    <a class="easyui-linkbutton" href="javascript:saveGoodsTypeChoose()" iconCls="icon-ok" plain="true">選択</a>
     <a class="easyui-linkbutton" href="javascript:closeGoodsTypeChooseDialog()" iconCls="icon-cancel"
-       plain="true">关闭</a>
+       plain="true">閉じる</a>
 </div>
 
 </body>

@@ -13,7 +13,7 @@
 
 	var url;
 	
-	//  商品类别模块管理
+	// 商品カテゴリモジュール管理
 
 	$(document).ready(function() {
 		
@@ -23,7 +23,7 @@
 				$("#tree").tree('expandAll');
 			},
 			onClick:function(node){
-				if(node.attributes.state==0){ // 假如是叶子节点 删除按钮恢复可用
+				if(node.attributes.state==0){ // リーフノードの場合、削除ボタンを有効化
 					$('#del').linkbutton('enable');
 				}else{
 					$('#del').linkbutton('disable');
@@ -39,17 +39,17 @@
 	
 	
 	function openGoodsTypeAddDialog(){
-		$("#dlg").dialog("open").dialog("setTitle","新增商品类别");
+		$("#dlg").dialog("open").dialog("setTitle","商品カテゴリの追加");
 	}
 	
 	function deleteGoodsType(){
-		var node = $('#tree').tree('getSelected'); // 获取选中节点
+		var node = $('#tree').tree('getSelected'); // 選択したノードを取得
 		var id=node.id;
 		$.post("/admin/goodsType/delete",{id:id},function(result){
 			if(result.success){
 				$('#tree').tree('reload');
 			}else{
-				$.messager.alert("系统提示","提交失败，请联系管理员！");
+				$.messager.alert("システム提示","送信に失敗しました。管理者に連絡してください！");
 			}
 			$('#del').linkbutton('disable');
 		},"json");
@@ -60,8 +60,8 @@
 		if(!$("#fm").form("validate")){
 			return;
 		}
-		var node = $('#tree').tree('getSelected'); // 获取选中节点
-		var parentId; // 父节点Id
+		var node = $('#tree').tree('getSelected'); // 選択したノードを取得
+		var parentId; // 親ノードID
 		if(node==null){
 			parentId=1;
 		}else{
@@ -72,7 +72,7 @@
 				$('#tree').tree('reload');
 				closeGoodsTypeDialog();
 			}else{
-				$.messager.alert("系统提示","提交失败，请联系管理员！");
+				$.messager.alert("システム提示","送信に失敗しました。管理者に連絡してください！");
 			}
 		},"json");
 	}
@@ -86,7 +86,7 @@
 	
 	
 	
-	// 商品管理模块
+	// 商品管理モジュール
 	
 	
 	function formatGoodsTypeId(val,row){
@@ -113,9 +113,9 @@
 	
 	
 	function openGoodsAddDialog(){
-		$("#dlg2").dialog("open").dialog("setTitle","添加商品信息");
+		$("#dlg2").dialog("open").dialog("setTitle","商品情報の追加");
 		url="/admin/goods/save";
-		var node = $('#tree').tree('getSelected'); // 获取选中节点
+		var node = $('#tree').tree('getSelected'); // 選択したノードを取得
 		if(node!=null&&node.id!=1){
 			$("#typeId").val(node.id);
 			$("#typeName").val(node.text);
@@ -132,11 +132,11 @@
 	function openGoodsModifyDialog(){
 		var selectedRows=$("#dg").datagrid("getSelections");
 		 if(selectedRows.length!=1){
-			 $.messager.alert("系统提示","请选择一条要修改的数据！");
+			 $.messager.alert("システム提示","修正するデータを1つ選択してください！");
 			 return;
 		 }
 		 var row=selectedRows[0];
-		 $("#dlg2").dialog("open").dialog("setTitle","修改商品信息");
+		 $("#dlg2").dialog("open").dialog("setTitle","商品情報の修正");
 		 $("#fm2").form("load",row);
 		 $("#typeId").val(row.type.id);
 		 $("#typeName").val(row.type.name);
@@ -145,7 +145,7 @@
 	}
 	
 	function chooseGoodsType(){
-		$("#dlg3").dialog("open").dialog("setTitle","选择商品类别");
+		$("#dlg3").dialog("open").dialog("setTitle","商品カテゴリの選択");
 		$("#typeTree").tree({
 			url:'/admin/goodsType/loadTreeInfo',
 			onLoadSuccess:function(node, data){
@@ -157,7 +157,7 @@
 	
 	
 	function saveGoodsTypeChoose(){
-		var node = $('#typeTree').tree('getSelected'); // 获取选中节点
+		var node = $('#typeTree').tree('getSelected'); // 選択したノードを取得
 		if(node!=null&&node.id!=1){
 			$("#typeId").val(node.id);
 			$("#typeName").val(node.text);
@@ -179,10 +179,10 @@
 			success:function(result){
 				var result=eval('('+result+')');
 				if(result.success){
-					$.messager.alert("系统提示","保存成功！");
+					$.messager.alert("システム提示","保存に成功しました！");
 					resetValue();	
 					if(type==2){
-						var node = $('#tree').tree('getSelected'); // 获取选中节点
+						var node = $('#tree').tree('getSelected'); // 選択したノードを取得
 						if(node!=null&&node.id!=1){
 							$("#typeId").val(node.id);
 							$("#typeName").val(node.text);
@@ -199,7 +199,7 @@
 					}
 					$("#dg").datagrid("reload");
 				}else{
-					$.messager.alert("系统提示",result.errorInfo);
+					$.messager.alert("システム提示",result.errorInfo);
 				}
 			}
 		 });
@@ -227,18 +227,18 @@
 	function deleteGoods(){
 		var selectedRows=$("#dg").datagrid("getSelections");
 		if(selectedRows.length==0){
-			 $.messager.alert("系统提示","请选择要删除的数据！");
+			 $.messager.alert("システム提示","削除するデータを選択してください！");
 			 return;
 		 }
 		 var id=selectedRows[0].id;
-		 $.messager.confirm("系统提示","您确定要删除这条数据吗？",function(r){
+		 $.messager.confirm("システム提示","このデータを削除してもよろしいですか？",function(r){
 				if(r){
 					$.post("/admin/goods/delete",{id:id},function(result){
 						if(result.success){
-							 $.messager.alert("系统提示","数据已成功删除！");
+							 $.messager.alert("システム提示","データの削除に成功しました！");
 							 $("#dg").datagrid("reload");
 						}else{
-							$.messager.alert("系统提示","<font color=red>"+result.errorInfo+"</font>");
+							$.messager.alert("システム提示","<font color=red>"+result.errorInfo+"</font>");
 						}
 					},"json");
 				} 
@@ -250,32 +250,32 @@
 	
 	
 	
-	// 商品单位模块 
+	// 商品単位モジュール
 	
 	
 	function openChooseGoodsUnitDialog(){
-		$("#dlg4").dialog("open").dialog("setTitle","单位");
+		$("#dlg4").dialog("open").dialog("setTitle","単位");
 	}
 	
 	function openGoodsUnitAddDialog(){
-		$("#dlg5").dialog("open").dialog("setTitle","添加单位信息");
+		$("#dlg5").dialog("open").dialog("setTitle","単位情報の追加");
 	}
 	
 	
 	function deleteGoodsUnit(){
 		var selectedRows=$("#dg4").datagrid("getSelections");
 		if(selectedRows.length!=1){
-			 $.messager.alert("系统提示","请选择要删除的数据！");
+			 $.messager.alert("システム提示","削除するデータを選択してください！");
 			 return;
 		 }
 		 var id=selectedRows[0].id;
-		 $.messager.confirm("系统提示","您确定要删除这条数据吗？",function(r){
+		 $.messager.confirm("システム提示","このデータを削除してもよろしいですか？",function(r){
 				if(r){
 					$.post("/admin/goodsUnit/delete",{id:id},function(result){
 						if(result.success){
 							 $("#dg4").datagrid("reload");
 						}else{
-							$.messager.alert("系统提示",result.errorInfo);
+							$.messager.alert("システム提示",result.errorInfo);
 						}
 					},"json");
 				} 
@@ -285,7 +285,7 @@
 	function chooseGoodsUnit(){
 		var selectedRows=$("#dg4").datagrid("getSelections");
 		if(selectedRows.length!=1){
-			 $.messager.alert("系统提示","请选择单位！");
+			 $.messager.alert("システム提示","単位を選択してください！");
 			 return;
 		}
 		var name=selectedRows[0].name;
@@ -307,11 +307,11 @@
 			success:function(result){
 				var result=eval('('+result+')');
 				if(result.success){
-					$.messager.alert("系统提示","保存成功！");
+					$.messager.alert("システム提示","保存に成功しました！");
 					closeGoodsUnitAddDialog();
 					$("#dg4").datagrid("reload");
 				}else{
-					$.messager.alert("系统提示",result.errorInfo);
+					$.messager.alert("システム提示",result.errorInfo);
 				}
 			}
 		 });
@@ -326,9 +326,9 @@
 	$(function () {  
 		 
 		 $("#dg").datagrid({  
-		        //双击事件  
+		        //ダブルクリックイベント  
 		        onDblClickRow: function (index, row) {  
-		        	$("#dlg2").dialog("open").dialog("setTitle","修改商品信息");
+		        	$("#dlg2").dialog("open").dialog("setTitle","商品情報の修正");
 		   		   $("#fm2").form("load",row);
 		   		   $("#typeId").val(row.type.id);
 		   		   $("#typeName").val(row.type.name);
@@ -339,7 +339,7 @@
 		 
 		 
 		 $("#dg4").datagrid({  
-		        //双击事件  
+		        //ダブルクリックイベント  
 		        onDblClickRow: function (index, row) {  
 		        	var selectedRows=$("#dg4").datagrid("getSelections");
 		    		var name=selectedRows[0].name;
@@ -359,12 +359,12 @@
     </script>
 </head>
 <body class="easyui-layout" style="padding-top: 2px">
-<div data-options="region:'west',collapsible:false" split=true style="width:200px" title="商品类别">
+<div data-options="region:'west',collapsible:false" split=true style="width:200px" title="商品カテゴリ">
     <ul class="easyui-tree" id="tree" style="padding: 10px"></ul>
     <div style="position:absolute;bottom: 10px;left: 15px">
-        <a class="easyui-linkbutton" data-options="iconCls:'icon-add'" href="javascript:openGoodsTypeAddDialog()">新增</a>
+        <a class="easyui-linkbutton" data-options="iconCls:'icon-add'" href="javascript:openGoodsTypeAddDialog()">追加</a>
         <a class="easyui-linkbutton" data-options="iconCls:'icon-remove',disabled:true" href="javascript:deleteGoodsType()"
-           id="del">删除</a>
+           id="del">削除</a>
     </div>
 </div>
 <div data-options="region:'center'">
@@ -373,31 +373,31 @@
            title="商品管理" toolbar="#tb" url="/admin/goods/list">
         <thead>
         <tr>
-            <th align="center" field="id" width="20">编号</th>
-            <th align="center" field="code" width="30">商品编码</th>
-            <th align="center" field="name" width="150">商品名称</th>
-            <th align="center" field="model" width="50">型号</th>
-            <th align="center" field="typeId" formatter="formatGoodsTypeId" hidden=true width="40">类别ID</th>
-            <th align="center" field="typeName" formatter="formatGoodsTypeName" width="50">类别</th>
-            <th align="center" field="unit" width="50">单位</th>
-            <th align="right" field="purchasingPrice" formatter="formatPurchasingPrice" width="50">采购价</th>
-            <th align="right" field="sellingPrice" formatter="formatSellingPrice" width="50">出售价</th>
-            <th align="center" field="minNum" width="50">库存下限</th>
-            <th align="center" field="producer" width="200">生产产商</th>
-            <th align="center" field="remarks" hidden=true width="150">备注</th>
+            <th align="center" field="id" width="20">番号</th>
+            <th align="center" field="code" width="30">商品コード</th>
+            <th align="center" field="name" width="150">商品名</th>
+            <th align="center" field="model" width="50">型番</th>
+            <th align="center" field="typeId" formatter="formatGoodsTypeId" hidden=true width="40">カテゴリID</th>
+            <th align="center" field="typeName" formatter="formatGoodsTypeName" width="50">カテゴリ</th>
+            <th align="center" field="unit" width="50">単位</th>
+            <th align="right" field="purchasingPrice" formatter="formatPurchasingPrice" width="50">仕入価格</th>
+            <th align="right" field="sellingPrice" formatter="formatSellingPrice" width="50">販売価格</th>
+            <th align="center" field="minNum" width="50">在庫下限</th>
+            <th align="center" field="producer" width="200">メーカー</th>
+            <th align="center" field="remarks" hidden=true width="150">備考</th>
         </tr>
         </thead>
     </table>
     <div id="tb">
         <div>
-            <a class="easyui-linkbutton" href="javascript:openGoodsAddDialog()" iconCls="icon-add" plain="true">添加</a>
+            <a class="easyui-linkbutton" href="javascript:openGoodsAddDialog()" iconCls="icon-add" plain="true">追加</a>
             <a class="easyui-linkbutton" href="javascript:openGoodsModifyDialog()" iconCls="icon-edit"
-               plain="true">修改</a>
-            <a class="easyui-linkbutton" href="javascript:deleteGoods()" iconCls="icon-remove" plain="true">删除</a>
+               plain="true">修正</a>
+            <a class="easyui-linkbutton" href="javascript:deleteGoods()" iconCls="icon-remove" plain="true">削除</a>
         </div>
         <div>
-            &nbsp;商品名称：&nbsp;<input id="s_name" onkeydown="if(event.keyCode==13) searchGoods()" size="20" type="text"/>
-            <a class="easyui-linkbutton" href="javascript:searchGoods()" iconCls="icon-search" plain="true">搜索</a>
+            &nbsp;商品名：&nbsp;<input id="s_name" onkeydown="if(event.keyCode==13) searchGoods()" size="20" type="text"/>
+            <a class="easyui-linkbutton" href="javascript:searchGoods()" iconCls="icon-search" plain="true">検索</a>
         </div>
     </div>
 </div>
@@ -407,7 +407,7 @@
 
     <form id="fm" method="post">
         <div>
-            商品类别：&nbsp;<input class="easyui-validatebox" id="goodsTypeName" name="name" required="true" type="text"/>
+            商品カテゴリ：&nbsp;<input class="easyui-validatebox" id="goodsTypeName" name="name" required="true" type="text"/>
         </div>
 
     </form>
@@ -415,7 +415,7 @@
 
 <div id="dlg-buttons">
     <a class="easyui-linkbutton" href="javascript:saveGoodsType()" iconCls="icon-ok">保存</a>
-    <a class="easyui-linkbutton" href="javascript:closeGoodsTypeDialog()" iconCls="icon-cancel">关闭</a>
+    <a class="easyui-linkbutton" href="javascript:closeGoodsTypeDialog()" iconCls="icon-cancel">閉じる</a>
 </div>
 
 <div buttons="#dlg-buttons2" class="easyui-dialog" closed="true"
@@ -423,7 +423,7 @@
     <form id="fm2" method="post">
         <table cellspacing="8px">
             <tr>
-                <td>所属类别：</td>
+                <td>カテゴリ：</td>
                 <td>
                     <input id="typeId" name="type.id" type="hidden"/>
                     <input class="easyui-validatebox" id="typeName" onclick="chooseGoodsType()" readonly="readonly" required="true"
@@ -432,23 +432,23 @@
                        plain="true"></a>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td>商品编码：</td>
+                <td>商品コード：</td>
                 <td><input class="easyui-validatebox" id="code" name="code" readonly="readonly" required="true"
                            style="width: 120px;" type="text"/></td>
             </tr>
             <tr>
-                <td>商品名称：</td>
+                <td>商品名：</td>
                 <td colspan="4">
                     <input class="easyui-validatebox" id="name" name="name" required="true" style="width: 350px;"
                            type="text"/>
                 </td>
             </tr>
             <tr>
-                <td>商品型号：</td>
+                <td>型番：</td>
                 <td><input class="easyui-validatebox" id="model" name="model" required="true" style="width: 120px;"
                            type="text"/></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td>单位：</td>
+                <td>単位：</td>
                 <td>
                     <select class="easyui-combobox" data-options="panelHeight:'auto',editable:false,valueField:'name',textField:'name',url:'/admin/goodsUnit/comboList'" id="unit" name="unit" required="true"
                             style="width: 90px;">
@@ -458,30 +458,30 @@
                 </td>
             </tr>
             <tr>
-                <td>采购价：</td>
+                <td>仕入価格：</td>
                 <td><input class="easyui-numberbox" data-options="min:0" id="purchasingPrice" name="purchasingPrice"
                            required="true" style="width: 120px;" type="text"/></td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td>销售价：</td>
+                <td>販売価格：</td>
                 <td><input class="easyui-numberbox" data-options="min:0" id="sellingPrice" name="sellingPrice"
                            required="true" style="width: 120px;" type="text"/></td>
             </tr>
             <tr>
-                <td>库存下限：</td>
+                <td>在庫下限：</td>
                 <td colspan="4">
                     <input class="easyui-numberbox" data-options="min:0" id="minNum" name="minNum" required="true"
                            style="width: 120px;" type="text"/>
                 </td>
             </tr>
             <tr>
-                <td>生产厂商：</td>
+                <td>メーカー：</td>
                 <td colspan="4">
                     <input class="easyui-validatebox" id="producer" name="producer" required="true" style="width: 350px;"
                            type="text"/>
                 </td>
             </tr>
             <tr>
-                <td valign="top">备注：</td>
+                <td valign="top">備考：</td>
                 <td colspan="4">
                     <textarea cols="47" id="remarks" name="remarks" rows="5"></textarea>
                 </td>
@@ -492,9 +492,9 @@
 
 <div id="dlg-buttons2">
     <a class="easyui-linkbutton" href="javascript:saveGoods(2)" iconCls="icon-ok"
-       id="saveAndAddNextBuuton">保存并新增下一商品</a>
+       id="saveAndAddNextBuuton">保存して次の商品を追加</a>
     <a class="easyui-linkbutton" href="javascript:saveGoods(1)" iconCls="icon-ok">保存</a>
-    <a class="easyui-linkbutton" href="javascript:closeGoodsDialog()" iconCls="icon-cancel">关闭</a>
+    <a class="easyui-linkbutton" href="javascript:closeGoodsDialog()" iconCls="icon-cancel">閉じる</a>
 </div>
 
 
@@ -506,9 +506,9 @@
 </div>
 
 <div id="dlg-buttons3">
-    <a class="easyui-linkbutton" href="javascript:saveGoodsTypeChoose()" iconCls="icon-ok" plain="true">选择</a>
+    <a class="easyui-linkbutton" href="javascript:saveGoodsTypeChoose()" iconCls="icon-ok" plain="true">選択</a>
     <a class="easyui-linkbutton" href="javascript:closeGoodsTypeChooseDialog()" iconCls="icon-cancel"
-       plain="true">关闭</a>
+       plain="true">閉じる</a>
 </div>
 
 <div class="easyui-dialog" closed="true" id="dlg4"
@@ -518,17 +518,17 @@
            rownumbers="true" singleSelect="true" toolbar="#tb2" url="/admin/goodsUnit/listAll">
         <thead>
         <tr>
-            <th align="center" field="id" hidden=true width="100">单位ID</th>
-            <th align="center" field="name" width="100">单位名称</th>
+            <th align="center" field="id" hidden=true width="100">単位ID</th>
+            <th align="center" field="name" width="100">単位名</th>
         </tr>
         </thead>
     </table>
     <div id="tb2">
         <div>
-            <a class="easyui-linkbutton" href="javascript:openGoodsUnitAddDialog()" plain="true">添加</a>
-            <a class="easyui-linkbutton" href="javascript:deleteGoodsUnit()" plain="true">删除</a>
-            <a class="easyui-linkbutton" href="javascript:chooseGoodsUnit()" plain="true">确定</a>
-            <a class="easyui-linkbutton" href="javascript:closeGoodsUnitDialog()" plain="true">取消</a>
+            <a class="easyui-linkbutton" href="javascript:openGoodsUnitAddDialog()" plain="true">追加</a>
+            <a class="easyui-linkbutton" href="javascript:deleteGoodsUnit()" plain="true">削除</a>
+            <a class="easyui-linkbutton" href="javascript:chooseGoodsUnit()" plain="true">確定</a>
+            <a class="easyui-linkbutton" href="javascript:closeGoodsUnitDialog()" plain="true">キャンセル</a>
         </div>
     </div>
 
@@ -539,7 +539,7 @@
 
     <form id="fm5" method="post">
         <div>
-            商品单位：&nbsp;<input class="easyui-validatebox" id="goodsUnitName" name="name" required="true" type="text"/>
+            商品単位：&nbsp;<input class="easyui-validatebox" id="goodsUnitName" name="name" required="true" type="text"/>
         </div>
 
     </form>
@@ -547,7 +547,7 @@
 
 <div id="dlg-buttons5">
     <a class="easyui-linkbutton" href="javascript:saveGoodsUnit()" iconCls="icon-ok">保存</a>
-    <a class="easyui-linkbutton" href="javascript:closeGoodsUnitAddDialog()" iconCls="icon-cancel">关闭</a>
+    <a class="easyui-linkbutton" href="javascript:closeGoodsUnitAddDialog()" iconCls="icon-cancel">閉じる</a>
 </div>
 
 </body>

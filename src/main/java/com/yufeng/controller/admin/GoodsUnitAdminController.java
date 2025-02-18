@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 后台管理商品单位Controller
+ * バックエンド商品単位Controller
  *
  * @author Wensen Ma
  */
@@ -36,40 +36,40 @@ public class GoodsUnitAdminController {
     }
 
     /**
-     * 查询所有商品单位
+     * 全ての商品単位を検索
      *
      * @return
      * @throws Exception
      */
     @RequestMapping("/listAll")
-    @RequiresPermissions(value = {"商品管理", "进货入库"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"商品管理", "入荷入庫"}, logical = Logical.OR)
     public Map<String, Object> listAll() throws Exception {
         List<GoodsUnit> goodsUnitList = goodsUnitService.listAll();
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("rows", goodsUnitList);
-        logService.save(new Log(Log.SEARCH_ACTION, "查询商品单位信息")); // 写入日志
+        logService.save(new Log(Log.SEARCH_ACTION, "商品単位情報を検索")); // ログを書き込む
         return resultMap;
     }
 
     /**
-     * 添加商品单位
+     * 商品単位を追加
      *
      * @param goodsUnit
      * @return
      * @throws Exception
      */
     @RequestMapping("/save")
-    @RequiresPermissions(value = {"商品管理", "进货入库"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"商品管理", "入荷入庫"}, logical = Logical.OR)
     public Map<String, Object> save(GoodsUnit goodsUnit) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
-        logService.save(new Log(Log.ADD_ACTION, "添加商品单位信息" + goodsUnit));
+        logService.save(new Log(Log.ADD_ACTION, "商品単位情報を追加" + goodsUnit));
         goodsUnitService.save(goodsUnit);
         resultMap.put("success", true);
         return resultMap;
     }
 
     /**
-     * 删除商品单位信息
+     * 商品単位情報を削除
      *
      * @param id
      * @param response
@@ -77,10 +77,10 @@ public class GoodsUnitAdminController {
      * @throws Exception
      */
     @RequestMapping("/delete")
-    @RequiresPermissions(value = {"商品管理", "进货入库"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"商品管理", "入荷入庫"}, logical = Logical.OR)
     public Map<String, Object> delete(Integer id) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
-        logService.save(new Log(Log.DELETE_ACTION, "删除商品单位信息" + goodsUnitService.findById(id)));  // 写入日志
+        logService.save(new Log(Log.DELETE_ACTION, "商品単位情報を削除" + goodsUnitService.findById(id)));  // ログを書き込む
         goodsUnitService.delete(id);
         resultMap.put("success", true);
         return resultMap;

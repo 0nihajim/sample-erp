@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 报损单Controller类
+ * 破損伝票Controllerクラス
  *
  * @author Wensen Ma
  */
@@ -54,11 +54,11 @@ public class DamageListAdminController {
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         dateFormat.setLenient(true);
-        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));   //true:允许输入空值，false:不能为空值
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));   //true:空値入力可能、false:空値不可
     }
 
     /**
-     * 根据条件分页查询报损单信息
+     * 条件に基づいて破損伝票情報をページング検索
      *
      * @param damageList
      * @param page
@@ -67,7 +67,7 @@ public class DamageListAdminController {
      * @throws Exception
      */
     @RequestMapping("/list")
-    @RequiresPermissions(value = {"报损报溢查询"})
+    @RequiresPermissions(value = {"破損超過照会"})
     public Map<String, Object> list(DamageList damageList) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         List<DamageList> damageListList = damageListService.list(damageList, Direction.DESC, "damageDate");
@@ -76,14 +76,14 @@ public class DamageListAdminController {
     }
 
     /**
-     * 根据报损单id查询所有报损单商品
+     * 破損伝票IDに基づいて全ての破損商品を検索
      *
      * @param damageListId
      * @return
      * @throws Exception
      */
     @RequestMapping("/listGoods")
-    @RequiresPermissions(value = {"报损报溢查询"})
+    @RequiresPermissions(value = {"破損超過照会"})
     public Map<String, Object> listGoods(Integer damageListId) throws Exception {
         if (damageListId == null) {
             return null;
@@ -96,7 +96,7 @@ public class DamageListAdminController {
 
 
     /**
-     * 获取报损单号
+     * 破損伝票番号を取得
      *
      * @param type
      * @return
@@ -104,12 +104,12 @@ public class DamageListAdminController {
      */
     @ResponseBody
     @RequestMapping("/getDamageNumber")
-    @RequiresPermissions(value = {"商品报损"})
+    @RequiresPermissions(value = {"商品破損"})
     public String genBillCode(String type) throws Exception {
         StringBuffer biilCodeStr = new StringBuffer();
         biilCodeStr.append("BS");
-        biilCodeStr.append(DateUtil.getCurrentDateStr()); // 拼接当前日期
-        String damageNumber = damageListService.getTodayMaxDamageNumber(); // 获取当天最大的报损单号
+        biilCodeStr.append(DateUtil.getCurrentDateStr()); // 現在日付を連結
+        String damageNumber = damageListService.getTodayMaxDamageNumber(); // 当日の最大破損伝票番号を取得
         if (damageNumber != null) {
             biilCodeStr.append(StringUtil.formatCode(damageNumber));
         } else {
@@ -119,7 +119,7 @@ public class DamageListAdminController {
     }
 
     /**
-     * 添加报损单 以及所有报损单商品 以及 修改商品的成本均价
+     * 破損伝票と全ての破損商品を追加、および商品の平均原価を修正
      *
      * @param damageList
      * @param goodsJson
@@ -128,15 +128,15 @@ public class DamageListAdminController {
      */
     @ResponseBody
     @RequestMapping("/save")
-    @RequiresPermissions(value = {"商品报损"})
+    @RequiresPermissions(value = {"商品破損"})
     public Map<String, Object> save(DamageList damageList, String goodsJson) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
-        damageList.setUser(userService.findByUserName((String) SecurityUtils.getSubject().getPrincipal())); // 设置操作用户
+        damageList.setUser(userService.findByUserName((String) SecurityUtils.getSubject().getPrincipal())); // 操作ユーザーを設定
         Gson gson = new Gson();
         List<DamageListGoods> plgList = gson.fromJson(goodsJson, new TypeToken<List<DamageListGoods>>() {
         }.getType());
         damageListService.save(damageList, plgList);
-        logService.save(new Log(Log.ADD_ACTION, "添加报损单"));
+        logService.save(new Log(Log.ADD_ACTION, "破損伝票を追加"));
         resultMap.put("success", true);
         return resultMap;
     }

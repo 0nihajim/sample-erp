@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 后台管理供应商Controller
+ * バックエンド管理仕入先Controller
  *
  * @author Wensen Ma
  */
@@ -33,7 +33,7 @@ public class SupplierAdminController {
     private LogService logService;
 
     /**
-     * 分页查询供应商信息
+     * 仕入先情報をページング検索
      *
      * @param supplier
      * @param page
@@ -42,19 +42,19 @@ public class SupplierAdminController {
      * @throws Exception
      */
     @RequestMapping("/list")
-    @RequiresPermissions(value = {"供应商管理"})
+    @RequiresPermissions(value = {"仕入先管理"})
     public Map<String, Object> list(Supplier supplier, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "rows", required = false) Integer rows) throws Exception {
         List<Supplier> supplierList = supplierService.list(supplier, page, rows, Direction.ASC, "id");
         Long total = supplierService.getCount(supplier);
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("rows", supplierList);
         resultMap.put("total", total);
-        logService.save(new Log(Log.SEARCH_ACTION, "查询供应商信息")); // 写入日志
+        logService.save(new Log(Log.SEARCH_ACTION, "仕入先情報を検索")); // ログを書き込む
         return resultMap;
     }
 
     /**
-     * 下拉框模糊查询
+     * ドロップダウンリストのあいまい検索
      *
      * @param q
      * @return
@@ -62,7 +62,7 @@ public class SupplierAdminController {
      */
     @ResponseBody
     @RequestMapping("/comboList")
-    @RequiresPermissions(value = {"进货入库", "退货出库", "进货单据查询", "退货单据查询"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"仕入入庫", "返品出庫", "仕入伝票照会", "返品伝票照会"}, logical = Logical.OR)
     public List<Supplier> comboList(String q) throws Exception {
         if (q == null) {
             q = "";
@@ -70,21 +70,20 @@ public class SupplierAdminController {
         return supplierService.findByName("%" + q + "%");
     }
 
-
     /**
-     * 添加或者修改供应商信息
+     * 仕入先情報を追加または修正
      *
      * @param supplier
      * @return
      * @throws Exception
      */
     @RequestMapping("/save")
-    @RequiresPermissions(value = {"供应商管理"})
+    @RequiresPermissions(value = {"仕入先管理"})
     public Map<String, Object> save(Supplier supplier) throws Exception {
-        if (supplier.getId() != null) { // 写入日志
-            logService.save(new Log(Log.UPDATE_ACTION, "更新供应商信息" + supplier));
+        if (supplier.getId() != null) { // ログを書き込む
+            logService.save(new Log(Log.UPDATE_ACTION, "仕入先情報を更新" + supplier));
         } else {
-            logService.save(new Log(Log.ADD_ACTION, "添加供应商信息" + supplier));
+            logService.save(new Log(Log.ADD_ACTION, "仕入先情報を追加" + supplier));
         }
         Map<String, Object> resultMap = new HashMap<>();
         supplierService.save(supplier);
@@ -92,9 +91,8 @@ public class SupplierAdminController {
         return resultMap;
     }
 
-
     /**
-     * 删除供应商信息
+     * 仕入先情報を削除
      *
      * @param id
      * @param response
@@ -102,13 +100,13 @@ public class SupplierAdminController {
      * @throws Exception
      */
     @RequestMapping("/delete")
-    @RequiresPermissions(value = {"供应商管理"})
+    @RequiresPermissions(value = {"仕入先管理"})
     public Map<String, Object> delete(String ids) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         String[] idsStr = ids.split(",");
         for (int i = 0; i < idsStr.length; i++) {
             int id = Integer.parseInt(idsStr[i]);
-            logService.save(new Log(Log.DELETE_ACTION, "删除供应商信息" + supplierService.findById(id)));  // 写入日志
+            logService.save(new Log(Log.DELETE_ACTION, "仕入先情報を削除" + supplierService.findById(id)));  // ログを書き込む
             supplierService.delete(id);
         }
         resultMap.put("success", true);

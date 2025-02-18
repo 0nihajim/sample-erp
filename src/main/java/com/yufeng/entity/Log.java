@@ -14,12 +14,12 @@ import java.util.Date;
 @Table(name = "t_log")
 public class Log {
 
-    public final static String LOGIN_ACTION = "登录操作";
-    public final static String LOGOUT_ACTION = "注销操作";
-    public final static String SEARCH_ACTION = "查询操作";
+    public final static String LOGIN_ACTION = "ログイン操作";
+    public final static String LOGOUT_ACTION = "ログアウト操作";
+    public final static String SEARCH_ACTION = "検索操作";
     public final static String UPDATE_ACTION = "更新操作";
-    public final static String ADD_ACTION = "添加操作";
-    public final static String DELETE_ACTION = "删除操作";
+    public final static String ADD_ACTION = "追加操作";
+    public final static String DELETE_ACTION = "削除操作";
 
 
     @Id

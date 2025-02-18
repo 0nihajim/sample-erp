@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 进货单Controller类
+ * 仕入伝票Controllerクラス
  *
  * @author Wensen Ma
  */
@@ -54,11 +54,11 @@ public class PurchaseListAdminController {
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         dateFormat.setLenient(true);
-        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));   //true:允许输入空值，false:不能为空值
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));   //true:空値入力可能、false:空値不可
     }
 
     /**
-     * 根据条件分页查询进货单信息
+     * 条件に基づいて仕入伝票情報をページング検索
      *
      * @param purchaseList
      * @param page
@@ -67,7 +67,7 @@ public class PurchaseListAdminController {
      * @throws Exception
      */
     @RequestMapping("/list")
-    @RequiresPermissions(value = {"进货单据查询"})
+    @RequiresPermissions(value = {"仕入伝票照会"})
     public Map<String, Object> list(PurchaseList purchaseList) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         List<PurchaseList> purchaseListList = purchaseListService.list(purchaseList, Direction.DESC, "purchaseDate");
@@ -76,14 +76,14 @@ public class PurchaseListAdminController {
     }
 
     /**
-     * 根据进货单id查询所有进货单商品
+     * 仕入伝票IDに基づいて全ての仕入商品を検索
      *
      * @param purchaseListId
      * @return
      * @throws Exception
      */
     @RequestMapping("/listGoods")
-    @RequiresPermissions(value = {"进货单据查询"})
+    @RequiresPermissions(value = {"仕入伝票照会"})
     public Map<String, Object> listGoods(Integer purchaseListId) throws Exception {
         if (purchaseListId == null) {
             return null;
@@ -95,7 +95,7 @@ public class PurchaseListAdminController {
     }
 
     /**
-     * 客户统计 获取进货单的所有商品信息
+     * 顧客統計 仕入伝票の全ての商品情報を取得
      *
      * @param purchaseList
      * @param purchaseListGoods
@@ -103,7 +103,7 @@ public class PurchaseListAdminController {
      * @throws Exception
      */
     @RequestMapping("/listCount")
-    @RequiresPermissions(value = {"客户统计"})
+    @RequiresPermissions(value = {"顧客統計"})
     public Map<String, Object> listCount(PurchaseList purchaseList, PurchaseListGoods purchaseListGoods) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         List<PurchaseList> purchaseListList = purchaseListService.list(purchaseList, Direction.DESC, "purchaseDate");
@@ -120,7 +120,7 @@ public class PurchaseListAdminController {
     }
 
     /**
-     * 获取进货单号
+     * 仕入伝票番号を取得
      *
      * @param type
      * @return
@@ -128,12 +128,12 @@ public class PurchaseListAdminController {
      */
     @ResponseBody
     @RequestMapping("/getPurchaseNumber")
-    @RequiresPermissions(value = {"进货入库"})
+    @RequiresPermissions(value = {"仕入入庫"})
     public String genBillCode(String type) throws Exception {
         StringBuffer biilCodeStr = new StringBuffer();
         biilCodeStr.append("JH");
-        biilCodeStr.append(DateUtil.getCurrentDateStr()); // 拼接当前日期
-        String purchaseNumber = purchaseListService.getTodayMaxPurchaseNumber(); // 获取当天最大的进货单号
+        biilCodeStr.append(DateUtil.getCurrentDateStr()); // 現在日付を連結
+        String purchaseNumber = purchaseListService.getTodayMaxPurchaseNumber(); // 当日の最大仕入伝票番号を取得
         if (purchaseNumber != null) {
             biilCodeStr.append(StringUtil.formatCode(purchaseNumber));
         } else {
@@ -143,7 +143,7 @@ public class PurchaseListAdminController {
     }
 
     /**
-     * 添加进货单 以及所有进货单商品 以及 修改商品的成本均价
+     * 仕入伝票及び全ての仕入商品を追加、商品の平均原価を修正
      *
      * @param purchaseList
      * @param goodsJson
@@ -152,21 +152,21 @@ public class PurchaseListAdminController {
      */
     @ResponseBody
     @RequestMapping("/save")
-    @RequiresPermissions(value = {"进货入库"})
+    @RequiresPermissions(value = {"仕入入庫"})
     public Map<String, Object> save(PurchaseList purchaseList, String goodsJson) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
-        purchaseList.setUser(userService.findByUserName((String) SecurityUtils.getSubject().getPrincipal())); // 设置操作用户
+        purchaseList.setUser(userService.findByUserName((String) SecurityUtils.getSubject().getPrincipal())); // 操作ユーザーを設定
         Gson gson = new Gson();
         List<PurchaseListGoods> plgList = gson.fromJson(goodsJson, new TypeToken<List<PurchaseListGoods>>() {
         }.getType());
         purchaseListService.save(purchaseList, plgList);
-        logService.save(new Log(Log.ADD_ACTION, "添加进货单"));
+        logService.save(new Log(Log.ADD_ACTION, "仕入伝票を追加"));
         resultMap.put("success", true);
         return resultMap;
     }
 
     /**
-     * 修改进货单的支付状态
+     * 仕入伝票の支払状態を修正
      *
      * @param id
      * @return
@@ -174,29 +174,29 @@ public class PurchaseListAdminController {
      */
     @ResponseBody
     @RequestMapping("/update")
-    @RequiresPermissions(value = {"供应商统计"})
+    @RequiresPermissions(value = {"仕入先統計"})
     public Map<String, Object> update(Integer id) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         PurchaseList purchaseList = purchaseListService.findById(id);
-        purchaseList.setState(1); // 修改成支付状态
+        purchaseList.setState(1); // 支払状態に修正
         purchaseListService.update(purchaseList);
         resultMap.put("success", true);
         return resultMap;
     }
 
     /**
-     * 根据id删除进货单信息 包括进货单里的商品
+     * IDに基づいて仕入伝票情報を削除 仕入伝票内の商品を含む
      *
      * @param id
      * @return
      * @throws Exception
      */
     @RequestMapping("/delete")
-    @RequiresPermissions(value = {"进货单据查询"})
+    @RequiresPermissions(value = {"仕入伝票照会"})
     public Map<String, Object> delete(Integer id) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         purchaseListService.delete(id);
-        logService.save(new Log(Log.DELETE_ACTION, "删除进货单信息" + purchaseListService.findById(id)));  // 写入日志
+        logService.save(new Log(Log.DELETE_ACTION, "仕入伝票情報を削除" + purchaseListService.findById(id)));  // ログを書き込む
         resultMap.put("success", true);
         return resultMap;
     }

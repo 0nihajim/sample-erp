@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 客户退货单Controller类
+ * 顧客返品伝票Controllerクラス
  *
  * @author Wensen Ma
  */
@@ -54,11 +54,11 @@ public class CustomerReturnListAdminController {
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         dateFormat.setLenient(true);
-        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));   //true:允许输入空值，false:不能为空值
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));   //true:空値入力可能、false:空値不可
     }
 
     /**
-     * 根据条件分页查询客户退货单信息
+     * 条件に基づいて顧客返品伝票情報をページング検索
      *
      * @param customerReturnList
      * @param page
@@ -67,7 +67,7 @@ public class CustomerReturnListAdminController {
      * @throws Exception
      */
     @RequestMapping("/list")
-    @RequiresPermissions(value = {"客户退货查询"})
+    @RequiresPermissions(value = {"顧客返品照会"})
     public Map<String, Object> list(CustomerReturnList customerReturnList) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         List<CustomerReturnList> customerReturnListList = customerReturnListService.list(customerReturnList, Direction.DESC, "customerReturnDate");
@@ -76,14 +76,14 @@ public class CustomerReturnListAdminController {
     }
 
     /**
-     * 根据客户退货单id查询所有客户退货单商品
+     * 顧客返品伝票IDに基づいて全ての返品商品を検索
      *
      * @param customerReturnListId
      * @return
      * @throws Exception
      */
     @RequestMapping("/listGoods")
-    @RequiresPermissions(value = {"客户退货查询"})
+    @RequiresPermissions(value = {"顧客返品照会"})
     public Map<String, Object> listGoods(Integer customerReturnListId) throws Exception {
         if (customerReturnListId == null) {
             return null;
@@ -95,7 +95,7 @@ public class CustomerReturnListAdminController {
     }
 
     /**
-     * 客户统计 获取客户退货单的所有商品信息
+     * 顧客統計 顧客返品伝票の全商品情報を取得
      *
      * @param purchaseList
      * @param purchaseListGoods
@@ -103,7 +103,7 @@ public class CustomerReturnListAdminController {
      * @throws Exception
      */
     @RequestMapping("/listCount")
-    @RequiresPermissions(value = {"客户统计"})
+    @RequiresPermissions(value = {"顧客統計"})
     public Map<String, Object> listCount(CustomerReturnList customerReturnList, CustomerReturnListGoods customerReturnListGoods) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         List<CustomerReturnList> customerReturnListList = customerReturnListService.list(customerReturnList, Direction.DESC, "customerReturnDate");
@@ -122,7 +122,7 @@ public class CustomerReturnListAdminController {
 
 
     /**
-     * 获取客户退货单号
+     * 顧客返品伝票番号を取得
      *
      * @param type
      * @return
@@ -130,12 +130,12 @@ public class CustomerReturnListAdminController {
      */
     @ResponseBody
     @RequestMapping("/getCustomerReturnNumber")
-    @RequiresPermissions(value = {"客户退货"})
+    @RequiresPermissions(value = {"顧客返品"})
     public String genBillCode(String type) throws Exception {
         StringBuffer biilCodeStr = new StringBuffer();
         biilCodeStr.append("XT");
-        biilCodeStr.append(DateUtil.getCurrentDateStr()); // 拼接当前日期
-        String customerReturnNumber = customerReturnListService.getTodayMaxCustomerReturnNumber(); // 获取当天最大的客户退货单号
+        biilCodeStr.append(DateUtil.getCurrentDateStr()); // 現在日付を連結
+        String customerReturnNumber = customerReturnListService.getTodayMaxCustomerReturnNumber(); // 当日の最大顧客返品伝票番号を取得
         if (customerReturnNumber != null) {
             biilCodeStr.append(StringUtil.formatCode(customerReturnNumber));
         } else {
@@ -145,7 +145,7 @@ public class CustomerReturnListAdminController {
     }
 
     /**
-     * 添加客户退货单 以及所有客户退货单商品
+     * 顧客返品伝票と全ての返品商品を追加
      *
      * @param customerReturnList
      * @param goodsJson
@@ -154,21 +154,21 @@ public class CustomerReturnListAdminController {
      */
     @ResponseBody
     @RequestMapping("/save")
-    @RequiresPermissions(value = {"客户退货"})
+    @RequiresPermissions(value = {"顧客返品"})
     public Map<String, Object> save(CustomerReturnList customerReturnList, String goodsJson) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
-        customerReturnList.setUser(userService.findByUserName((String) SecurityUtils.getSubject().getPrincipal())); // 设置操作用户
+        customerReturnList.setUser(userService.findByUserName((String) SecurityUtils.getSubject().getPrincipal())); // 操作ユーザーを設定
         Gson gson = new Gson();
         List<CustomerReturnListGoods> plgList = gson.fromJson(goodsJson, new TypeToken<List<CustomerReturnListGoods>>() {
         }.getType());
         customerReturnListService.save(customerReturnList, plgList);
-        logService.save(new Log(Log.ADD_ACTION, "添加客户退货单"));
+        logService.save(new Log(Log.ADD_ACTION, "顧客返品伝票を追加"));
         resultMap.put("success", true);
         return resultMap;
     }
 
     /**
-     * 修改退货单的支付状态
+     * 返品伝票の支払状態を更新
      *
      * @param id
      * @return
@@ -176,29 +176,29 @@ public class CustomerReturnListAdminController {
      */
     @ResponseBody
     @RequestMapping("/update")
-    @RequiresPermissions(value = {"客户统计"})
+    @RequiresPermissions(value = {"顧客統計"})
     public Map<String, Object> update(Integer id) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         CustomerReturnList customerReturnList = customerReturnListService.findById(id);
-        customerReturnList.setState(1); // 修改成支付状态
+        customerReturnList.setState(1); // 支払済状態に更新
         customerReturnListService.update(customerReturnList);
         resultMap.put("success", true);
         return resultMap;
     }
 
     /**
-     * 根据id删除客户退货单信息 包括客户退货单里的商品
+     * IDに基づいて顧客返品伝票情報を削除（返品商品を含む）
      *
      * @param id
      * @return
      * @throws Exception
      */
     @RequestMapping("/delete")
-    @RequiresPermissions(value = {"客户退货查询"})
+    @RequiresPermissions(value = {"顧客返品照会"})
     public Map<String, Object> delete(Integer id) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         customerReturnListService.delete(id);
-        logService.save(new Log(Log.DELETE_ACTION, "删除客户退货单信息" + customerReturnListService.findById(id)));  // 写入日志
+        logService.save(new Log(Log.DELETE_ACTION, "顧客返品伝票情報を削除" + customerReturnListService.findById(id)));  // ログを書き込む
         resultMap.put("success", true);
         return resultMap;
     }

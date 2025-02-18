@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 后台管理用户Controller
+ * バックエンド管理ユーザーController
  *
  * @author Wensen Ma
  */
@@ -43,7 +43,7 @@ public class UserAdminController {
     private LogService logService;
 
     /**
-     * 修改密码
+     * パスワードを変更
      *
      * @param id
      * @param newPassword
@@ -52,7 +52,7 @@ public class UserAdminController {
      */
     @ResponseBody
     @PostMapping("/modifyPassword")
-    @RequiresPermissions(value = {"修改密码"})
+    @RequiresPermissions(value = {"パスワード変更"})
     public Map<String, Object> modifyPassword(Integer id, String newPassword, HttpSession session) throws Exception {
         User currentUser = (User) session.getAttribute("currentUser");
         User user = userService.findById(currentUser.getId());
@@ -60,26 +60,26 @@ public class UserAdminController {
         userService.save(user);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("success", true);
-        logService.save(new Log(Log.UPDATE_ACTION, "修改密码")); // 写入日志
+        logService.save(new Log(Log.UPDATE_ACTION, "パスワードを変更")); // ログを書き込む
         return map;
     }
 
     /**
-     * 安全退出
+     * 安全にログアウト
      *
      * @return
      * @throws Exception
      */
     @GetMapping("/logout")
-    @RequiresPermissions(value = {"安全退出"})
+    @RequiresPermissions(value = {"安全にログアウト"})
     public String logout() throws Exception {
-        logService.save(new Log(Log.LOGOUT_ACTION, "用户注销"));
+        logService.save(new Log(Log.LOGOUT_ACTION, "ユーザーがログアウト"));
         SecurityUtils.getSubject().logout();
         return "redirect:/login.html";
     }
 
     /**
-     * 分页查询用户信息
+     * ユーザー情報をページング検索
      *
      * @param user
      * @param page
@@ -89,7 +89,7 @@ public class UserAdminController {
      */
     @ResponseBody
     @RequestMapping("/list")
-    @RequiresPermissions(value = {"用户管理"})
+    @RequiresPermissions(value = {"ユーザー管理"})
     public Map<String, Object> list(User user, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "rows", required = false) Integer rows) throws Exception {
         List<User> userList = userService.list(user, page, rows, Direction.ASC, "id");
         for (User u : userList) {
@@ -104,12 +104,12 @@ public class UserAdminController {
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("rows", userList);
         resultMap.put("total", total);
-        logService.save(new Log(Log.SEARCH_ACTION, "查询用户信息")); // 写入日志
+        logService.save(new Log(Log.SEARCH_ACTION, "ユーザー情報を検索")); // ログを書き込む
         return resultMap;
     }
 
     /**
-     * 保存用户角色设置
+     * ユーザーロール設定を保存
      *
      * @param roleIds
      * @param userId
@@ -118,13 +118,13 @@ public class UserAdminController {
      */
     @ResponseBody
     @RequestMapping("/saveRoleSet")
-    @RequiresPermissions(value = {"用户管理"})
+    @RequiresPermissions(value = {"ユーザー管理"})
     public Map<String, Object> saveRoleSet(String roleIds, Integer userId) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
-        userRoleService.deleteByUserId(userId);  // 根据用户id删除所有用户角色关联实体
+        userRoleService.deleteByUserId(userId);  // ユーザーIDに基づいて全てのユーザーロール関連エンティティを削除
         if (StringUtil.isNotEmpty(roleIds)) {
             String[] idsStr = roleIds.split(",");
-            for (int i = 0; i < idsStr.length; i++) { // 然后添加所有用户角色关联实体
+            for (int i = 0; i < idsStr.length; i++) { // その後、全てのユーザーロール関連エンティティを追加
                 UserRole userRole = new UserRole();
                 userRole.setUser(userService.findById(userId));
                 userRole.setRole(roleService.findById(Integer.parseInt(idsStr[i])));
@@ -132,13 +132,12 @@ public class UserAdminController {
             }
         }
         resultMap.put("success", true);
-        logService.save(new Log(Log.UPDATE_ACTION, "保存用户角色设置"));
+        logService.save(new Log(Log.UPDATE_ACTION, "ユーザーロール設定を保存"));
         return resultMap;
     }
 
-
     /**
-     * 添加或者修改用户信息
+     * ユーザー情報を追加または更新
      *
      * @param user
      * @return
@@ -146,29 +145,28 @@ public class UserAdminController {
      */
     @ResponseBody
     @RequestMapping("/save")
-    @RequiresPermissions(value = {"用户管理"})
+    @RequiresPermissions(value = {"ユーザー管理"})
     public Map<String, Object> save(User user) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         if (user.getId() == null) {
             if (userService.findByUserName(user.getUserName()) != null) {
                 resultMap.put("success", false);
-                resultMap.put("errorInfo", "用户名已经存在!");
+                resultMap.put("errorInfo", "ユーザー名が既に存在します!");
                 return resultMap;
             }
         }
-        if (user.getId() != null) { // 写入日志
-            logService.save(new Log(Log.UPDATE_ACTION, "更新用户信息" + user));
+        if (user.getId() != null) { // ログを書き込む
+            logService.save(new Log(Log.UPDATE_ACTION, "ユーザー情報を更新" + user));
         } else {
-            logService.save(new Log(Log.ADD_ACTION, "添加用户信息" + user));
+            logService.save(new Log(Log.ADD_ACTION, "ユーザー情報を追加" + user));
         }
         userService.save(user);
         resultMap.put("success", true);
         return resultMap;
     }
 
-
     /**
-     * 删除用户信息
+     * ユーザー情報を削除
      *
      * @param id
      * @param response
@@ -177,11 +175,11 @@ public class UserAdminController {
      */
     @ResponseBody
     @RequestMapping("/delete")
-    @RequiresPermissions(value = {"用户管理"})
+    @RequiresPermissions(value = {"ユーザー管理"})
     public Map<String, Object> delete(Integer id) throws Exception {
-        logService.save(new Log(Log.DELETE_ACTION, "删除用户信息" + userService.findById(id)));  // 写入日志
+        logService.save(new Log(Log.DELETE_ACTION, "ユーザー情報を削除" + userService.findById(id)));  // ログを書き込む
         Map<String, Object> resultMap = new HashMap<>();
-        userRoleService.deleteByUserId(id); // 删除用户角色关联信息
+        userRoleService.deleteByUserId(id); // ユーザーロール関連情報を削除
         userService.delete(id);
         resultMap.put("success", true);
         return resultMap;

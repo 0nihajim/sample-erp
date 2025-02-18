@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 后台管理商品Controller
+ * バックエンド商品管理Controller
  *
  * @author Wensen Ma
  */
@@ -41,58 +41,46 @@ public class GoodsAdminContrller {
     private LogService logService;
 
     /**
-     * 根据条件分页查询商品信息
-     *
-     * @param goods
-     * @param page
-     * @param rows
-     * @return
-     * @throws Exception
+     * 商品情報をページング検索
      */
     @RequestMapping("/list")
-    @RequiresPermissions(value = {"商品管理", "进货入库"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"商品管理", "入荷入庫"}, logical = Logical.OR)
     public Map<String, Object> list(Goods goods, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "rows", required = false) Integer rows) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         List<Goods> goodsList = goodsService.list(goods, page, rows, Direction.ASC, "id");
         Long total = goodsService.getCount(goods);
         resultMap.put("rows", goodsList);
         resultMap.put("total", total);
-        logService.save(new Log(Log.SEARCH_ACTION, "查询商品信息")); // 写入日志
+        logService.save(new Log(Log.SEARCH_ACTION, "商品情報を検索")); // ログを書き込む
         return resultMap;
     }
 
     /**
-     * 根据条件分页查询商品库存信息
-     *
-     * @param goods
-     * @param page
-     * @param rows
-     * @return
-     * @throws Exception
+     * 商品在庫情報をページング検索
      */
     @RequestMapping("/listInventory")
-    @RequiresPermissions(value = {"当前库存查询"})
+    @RequiresPermissions(value = {"現在庫照会"})
     public Map<String, Object> listInventory(Goods goods, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "rows", required = false) Integer rows) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         List<Goods> goodsList = goodsService.list(goods, page, rows, Direction.ASC, "id");
         Long total = goodsService.getCount(goods);
         for (Goods g : goodsList) {
-            g.setSaleTotal(saleListGoodsService.getTotalByGoodsId(g.getId()) - customerReturnListGoodsService.getTotalByGoodsId(g.getId())); // 设置销量总数
+            g.setSaleTotal(saleListGoodsService.getTotalByGoodsId(g.getId()) - customerReturnListGoodsService.getTotalByGoodsId(g.getId())); // 販売総数を設定
         }
         resultMap.put("rows", goodsList);
         resultMap.put("total", total);
-        logService.save(new Log(Log.SEARCH_ACTION, "查询商品库存信息")); // 写入日志
+        logService.save(new Log(Log.SEARCH_ACTION, "商品在庫情報を検索"));
         return resultMap;
     }
 
     /**
-     * 查询库存报警商品
+     * 在庫警告商品を検索
      *
      * @return
      * @throws Exception
      */
     @RequestMapping("/listAlarm")
-    @RequiresPermissions(value = {"库存报警"})
+    @RequiresPermissions(value = {"在庫警告"})
     public Map<String, Object> listAlart() throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         List<Goods> alarmGoodsList = goodsService.listAlarm();
@@ -101,58 +89,58 @@ public class GoodsAdminContrller {
     }
 
     /**
-     * 根据条件分页查询没有库存的商品信息
+     * 在庫なし商品情報をページング検索
      *
      * @param codeOrName
      * @return
      * @throws Exception
      */
     @RequestMapping("/listNoInventoryQuantity")
-    @RequiresPermissions(value = {"期初库存"})
+    @RequiresPermissions(value = {"期初在庫"})
     public Map<String, Object> listNoInventoryQuantity(@RequestParam(value = "codeOrName", required = false) String codeOrName, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "rows", required = false) Integer rows) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         List<Goods> goodsList = goodsService.listNoInventoryQuantityByCodeOrName(codeOrName, page, rows, Direction.ASC, "id");
         Long total = goodsService.getCountNoInventoryQuantityByCodeOrName(codeOrName);
         resultMap.put("rows", goodsList);
         resultMap.put("total", total);
-        logService.save(new Log(Log.SEARCH_ACTION, "查询商品信息（无库存）")); // 写入日志
+        logService.save(new Log(Log.SEARCH_ACTION, "商品情報を検索（在庫なし）")); // ログを書き込む
         return resultMap;
     }
 
     /**
-     * 分页查询有库存的商品信息
+     * 在庫あり商品情報をページング検索
      *
      * @param codeOrName
      * @return
      * @throws Exception
      */
     @RequestMapping("/listHasInventoryQuantity")
-    @RequiresPermissions(value = {"期初库存"})
+    @RequiresPermissions(value = {"期初在庫"})
     public Map<String, Object> listHasInventoryQuantity(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "rows", required = false) Integer rows) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         List<Goods> goodsList = goodsService.listHasInventoryQuantity(page, rows, Direction.ASC, "id");
         Long total = goodsService.getCountHasInventoryQuantity();
         resultMap.put("rows", goodsList);
         resultMap.put("total", total);
-        logService.save(new Log(Log.SEARCH_ACTION, "查询商品信息（有库存）")); // 写入日志
+        logService.save(new Log(Log.SEARCH_ACTION, "商品情報を検索（在庫あり）")); // ログを書き込む
         return resultMap;
     }
 
     /**
-     * 删除库存 把商品的库存设置成0
+     * 在庫を削除し、商品の在庫を0に設定
      *
      * @param id
      * @return
      * @throws Exception
      */
     @RequestMapping("/deleteStock")
-    @RequiresPermissions(value = {"期初库存"})
+    @RequiresPermissions(value = {"期初在庫"})
     public Map<String, Object> deleteStock(Integer id) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         Goods goods = goodsService.findById(id);
-        if (goods.getState() == 2) { // 2表示有进货或者销售单据 不能删除
+        if (goods.getState() == 2) { // 入荷または販売伝票が発生している場合は削除不可
             resultMap.put("success", false);
-            resultMap.put("errorInfo", "该商品已经发生单据，不能删除！");
+            resultMap.put("errorInfo", "この商品は伝票が発生しているため削除できません！");
         } else {
             goods.setInventoryQuantity(0);
             goodsService.save(goods);
@@ -162,7 +150,7 @@ public class GoodsAdminContrller {
     }
 
     /**
-     * 生成商品编码
+     * 商品コードを生成
      *
      * @return
      * @throws Exception
@@ -185,20 +173,20 @@ public class GoodsAdminContrller {
     }
 
     /**
-     * 添加商品
+     * 商品を追加
      *
      * @param goods
      * @return
      * @throws Exception
      */
     @RequestMapping("/save")
-    @RequiresPermissions(value = {"商品管理", "进货入库"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"商品管理", "入荷入庫"}, logical = Logical.OR)
     public Map<String, Object> save(Goods goods) throws Exception {
-        if (goods.getId() != null) { // 写入日志
-            logService.save(new Log(Log.UPDATE_ACTION, "更新商品信息" + goods));
+        if (goods.getId() != null) { // ログを書き込む
+            logService.save(new Log(Log.UPDATE_ACTION, "商品情報を更新" + goods));
         } else {
-            logService.save(new Log(Log.ADD_ACTION, "添加商品信息" + goods));
-            goods.setLastPurchasingPrice(goods.getPurchasingPrice()); // 设置上次进价为当前价格
+            logService.save(new Log(Log.ADD_ACTION, "商品情報を追加" + goods));
+            goods.setLastPurchasingPrice(goods.getPurchasingPrice()); // 前回入荷価格を現在価格に設定
         }
         Map<String, Object> resultMap = new HashMap<>();
         goodsService.save(goods);
@@ -207,7 +195,7 @@ public class GoodsAdminContrller {
     }
 
     /**
-     * 添加商品到仓库 修改库存信息
+     * 倉庫に商品を追加し、在庫情報を修正
      *
      * @param id
      * @param num
@@ -216,20 +204,20 @@ public class GoodsAdminContrller {
      * @throws Exception
      */
     @RequestMapping("/saveStore")
-    @RequiresPermissions(value = {"期初库存"})
+    @RequiresPermissions(value = {"期初在庫"})
     public Map<String, Object> saveStore(Integer id, Integer num, Float price) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         Goods goods = goodsService.findById(id);
         goods.setInventoryQuantity(num);
         goods.setPurchasingPrice(price);
         goodsService.save(goods);
-        logService.save(new Log(Log.UPDATE_ACTION, "修改商品" + goods + "，价格=" + price + ",库存=" + num)); // 写入日志
+        logService.save(new Log(Log.UPDATE_ACTION, "商品" + goods + "を修正、価格=" + price + ",在庫=" + num)); // ログを書き込む
         resultMap.put("success", true);
         return resultMap;
     }
 
     /**
-     * 删除商品信息
+     * 商品情報を削除
      *
      * @param id
      * @param response
@@ -243,12 +231,12 @@ public class GoodsAdminContrller {
         Goods goods = goodsService.findById(id);
         if (goods.getState() == 1) {
             resultMap.put("success", false);
-            resultMap.put("errorInfo", "该商品已经期初入库，不能删除！");
+            resultMap.put("errorInfo", "この商品は期初入庫されているため削除できません！");
         } else if (goods.getState() == 2) {
             resultMap.put("success", false);
-            resultMap.put("errorInfo", "该商品已经发生单据，不能删除！");
+            resultMap.put("errorInfo", "この商品は伝票が発生しているため削除できません！");
         } else {
-            logService.save(new Log(Log.DELETE_ACTION, "删除商品信息" + goodsService.findById(id)));  // 写入日志
+            logService.save(new Log(Log.DELETE_ACTION, "商品情報を削除" + goodsService.findById(id)));  // ログを書き込む
             goodsService.delete(id);
             resultMap.put("success", true);
         }

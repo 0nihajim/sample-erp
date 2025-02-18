@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>系统日志</title>
+    <title>システムログ</title>
     <link href="/static/jquery-easyui-1.3.3/themes/default/easyui.css" rel="stylesheet" type="text/css"></link>
     <link href="/static/jquery-easyui-1.3.3/themes/icon.css" rel="stylesheet" type="text/css"></link>
     <script src="/static/jquery-easyui-1.3.3/jquery.min.js" type="text/javascript"></script>
@@ -35,13 +35,13 @@
 <body style="margin: 1px">
 <table class="easyui-datagrid" fit="true" fitColumns="true"
        id="dg" pagination="true" rownumbers="true"
-       title="系统日志" toolbar="#tb" url="/admin/log/list">
+       title="システムログ" toolbar="#tb" url="/admin/log/list">
     <thead>
     <tr>
-        <th align="center" field="id" width="20">编号</th>
-        <th align="center" field="type" width="30">日志类型</th>
-        <th align="center" field="user" formatter="formatterUser" width="30">操作用户</th>
-        <th align="center" field="time" width="50">操作时间</th>
+        <th align="center" field="id" width="20">番号</th>
+        <th align="center" field="type" width="30">ログタイプ</th>
+        <th align="center" field="user" formatter="formatterUser" width="30">操作ユーザー</th>
+        <th align="center" field="time" width="50">操作時間</th>
         <th align="left" field="content" width="250">操作内容</th>
     </tr>
     </thead>
@@ -50,27 +50,27 @@
 <div id="tb">
     <div style="padding-bottom: 5px">
         <fieldset style="border-color: #E7F0FF">
-            <legend>查询设置</legend>
-            &nbsp;日志类型：&nbsp;
+            <legend>検索設定</legend>
+            &nbsp;ログタイプ：&nbsp;
             <select class="easyui-combobox" editable="false" id="s_type" panelHeight="auto" style="width: 154px;">
-                <option value="">所有类型</option>
-                <option value="登录操作">登录操作</option>
-                <option value="注销操作">注销操作</option>
-                <option value="查询操作">查询操作</option>
+                <option value="">全てのタイプ</option>
+                <option value="登录操作">ログイン操作</option>
+                <option value="注销操作">ログアウト操作</option>
+                <option value="查询操作">検索操作</option>
                 <option value="更新操作">更新操作</option>
-                <option value="添加操作">添加操作</option>
-                <option value="删除操作">删除操作</option>
+                <option value="添加操作">追加操作</option>
+                <option value="删除操作">削除操作</option>
             </select>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;操作用户：&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;操作ユーザー：&nbsp;
             <input id="s_trueName" onkeydown="if(event.keyCode==13) searchLog()" size="20" type="text"/>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;操作时间：&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;操作時間：&nbsp;
             <input class="easyui-datetimebox" editable=false id="s_btime" style="width:150px">
             &nbsp;&nbsp;-&nbsp;&nbsp;
             <input class="easyui-datetimebox" editable=false id="s_etime" style="width:150px">
             &nbsp;&nbsp;<a class="easyui-linkbutton" href="javascript:searchLog()" iconCls="icon-search"
-                           plain="true">搜索</a>
+                           plain="true">検索</a>
             &nbsp;&nbsp;<a class="easyui-linkbutton" href="javascript:resetValue()" iconCls="icon-reset"
-                           plain="true">重置</a>
+                           plain="true">リセット</a>
         </fieldset>
     </div>
 </div>

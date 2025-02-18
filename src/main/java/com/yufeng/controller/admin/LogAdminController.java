@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 后台管理系统日志Controller
+ * バックエンドシステムログController
  *
  * @author Wensen Ma
  */
@@ -34,11 +34,11 @@ public class LogAdminController {
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         dateFormat.setLenient(true);
-        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));   //true:允许输入空值，false:不能为空值
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));   //true:空値入力可能、false:空値不可
     }
 
     /**
-     * 根据条件分页查询日志信息
+     * 条件に基づいてログ情報をページング検索
      *
      * @param goods
      * @param page
@@ -47,7 +47,7 @@ public class LogAdminController {
      * @throws Exception
      */
     @RequestMapping("/list")
-    @RequiresPermissions(value = {"系统日志"})
+    @RequiresPermissions(value = {"システムログ"})
     public Map<String, Object> list(Log log, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "rows", required = false) Integer rows) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         List<Log> logList = logService.list(log, page, rows, Direction.DESC, "time");
