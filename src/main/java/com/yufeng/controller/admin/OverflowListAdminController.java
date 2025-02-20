@@ -67,7 +67,7 @@ public class OverflowListAdminController {
      * @throws Exception
      */
     @RequestMapping("/list")
-    @RequiresPermissions(value = {"過不足照会"})
+    @RequiresPermissions(value = {"損失過剰照会"})
     public Map<String, Object> list(OverflowList overflowList) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         List<OverflowList> overflowListList = overflowListService.list(overflowList, Direction.DESC, "overflowDate");
@@ -83,7 +83,7 @@ public class OverflowListAdminController {
      * @throws Exception
      */
     @RequestMapping("/listGoods")
-    @RequiresPermissions(value = {"過不足照会"})
+    @RequiresPermissions(value = {"損失過剰照会"})
     public Map<String, Object> listGoods(Integer overflowListId) throws Exception {
         if (overflowListId == null) {
             return null;
