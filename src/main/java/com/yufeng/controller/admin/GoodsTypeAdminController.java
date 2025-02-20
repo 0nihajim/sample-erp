@@ -39,7 +39,7 @@ public class GoodsTypeAdminController {
      * @throws Exception
      */
     @PostMapping("/loadTreeInfo")
-    @RequiresPermissions(value = {"商品管理", "入荷入庫", "現在庫照会"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"商品管理", "仕入入庫", "現在庫照会"}, logical = Logical.OR)
     public String loadTreeInfo() throws Exception {
         logService.save(new Log(Log.SEARCH_ACTION, "商品カテゴリ情報を検索")); // ログを書き込む
         return getAllByParentId(-1).toString();
@@ -54,7 +54,7 @@ public class GoodsTypeAdminController {
      * @throws Exception
      */
     @RequestMapping("/save")
-    @RequiresPermissions(value = {"商品管理", "入荷入庫"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"商品管理", "仕入入庫"}, logical = Logical.OR)
     public Map<String, Object> save(String name, Integer parentId) throws Exception {
 
         Map<String, Object> resultMap = new HashMap<>();
