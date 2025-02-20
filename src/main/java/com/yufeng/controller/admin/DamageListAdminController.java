@@ -104,7 +104,7 @@ public class DamageListAdminController {
      */
     @ResponseBody
     @RequestMapping("/getDamageNumber")
-    @RequiresPermissions(value = {"商品破損"})
+    @RequiresPermissions(value = {"商品損失"})
     public String genBillCode(String type) throws Exception {
         StringBuffer biilCodeStr = new StringBuffer();
         biilCodeStr.append("BS");
@@ -128,7 +128,7 @@ public class DamageListAdminController {
      */
     @ResponseBody
     @RequestMapping("/save")
-    @RequiresPermissions(value = {"商品破損"})
+    @RequiresPermissions(value = {"商品損失"})
     public Map<String, Object> save(DamageList damageList, String goodsJson) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         damageList.setUser(userService.findByUserName((String) SecurityUtils.getSubject().getPrincipal())); // 操作ユーザーを設定
