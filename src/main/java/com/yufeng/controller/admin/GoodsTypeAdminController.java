@@ -82,7 +82,7 @@ public class GoodsTypeAdminController {
      * @throws Exception
      */
     @RequestMapping("/delete")
-    @RequiresPermissions(value = {"商品管理", "入荷入庫"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"商品管理", "仕入入庫"}, logical = Logical.OR)
     public Map<String, Object> delete(Integer id) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         GoodsType goodsType = goodsTypeService.findById(id);
