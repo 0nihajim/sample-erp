@@ -67,7 +67,7 @@ public class DamageListAdminController {
      * @throws Exception
      */
     @RequestMapping("/list")
-    @RequiresPermissions(value = {"破損超過照会"})
+    @RequiresPermissions(value = {"損失過剰照会"})
     public Map<String, Object> list(DamageList damageList) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         List<DamageList> damageListList = damageListService.list(damageList, Direction.DESC, "damageDate");
@@ -83,7 +83,7 @@ public class DamageListAdminController {
      * @throws Exception
      */
     @RequestMapping("/listGoods")
-    @RequiresPermissions(value = {"破損超過照会"})
+    @RequiresPermissions(value = {"損失過剰照会"})
     public Map<String, Object> listGoods(Integer damageListId) throws Exception {
         if (damageListId == null) {
             return null;
