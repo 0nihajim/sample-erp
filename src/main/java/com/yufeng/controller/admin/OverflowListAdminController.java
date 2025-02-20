@@ -104,7 +104,7 @@ public class OverflowListAdminController {
      */
     @ResponseBody
     @RequestMapping("/getOverflowNumber")
-    @RequiresPermissions(value = {"商品過剰登録"})
+    @RequiresPermissions(value = {"商品過剰"})
     public String genBillCode(String type) throws Exception {
         StringBuffer biilCodeStr = new StringBuffer();
         biilCodeStr.append("BY");
@@ -128,7 +128,7 @@ public class OverflowListAdminController {
      */
     @ResponseBody
     @RequestMapping("/save")
-    @RequiresPermissions(value = {"商品過剰登録"})
+    @RequiresPermissions(value = {"商品過剰"})
     public Map<String, Object> save(OverflowList overflowList, String goodsJson) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         overflowList.setUser(userService.findByUserName((String) SecurityUtils.getSubject().getPrincipal())); // 操作ユーザーを設定
