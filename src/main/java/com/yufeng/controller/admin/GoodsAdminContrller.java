@@ -96,7 +96,7 @@ public class GoodsAdminContrller {
      * @throws Exception
      */
     @RequestMapping("/listNoInventoryQuantity")
-    @RequiresPermissions(value = {"期初在庫"})
+    @RequiresPermissions(value = {"期首在庫"})
     public Map<String, Object> listNoInventoryQuantity(@RequestParam(value = "codeOrName", required = false) String codeOrName, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "rows", required = false) Integer rows) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         List<Goods> goodsList = goodsService.listNoInventoryQuantityByCodeOrName(codeOrName, page, rows, Direction.ASC, "id");
@@ -115,7 +115,7 @@ public class GoodsAdminContrller {
      * @throws Exception
      */
     @RequestMapping("/listHasInventoryQuantity")
-    @RequiresPermissions(value = {"期初在庫"})
+    @RequiresPermissions(value = {"期首在庫"})
     public Map<String, Object> listHasInventoryQuantity(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "rows", required = false) Integer rows) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         List<Goods> goodsList = goodsService.listHasInventoryQuantity(page, rows, Direction.ASC, "id");
@@ -134,7 +134,7 @@ public class GoodsAdminContrller {
      * @throws Exception
      */
     @RequestMapping("/deleteStock")
-    @RequiresPermissions(value = {"期初在庫"})
+    @RequiresPermissions(value = {"期首在庫"})
     public Map<String, Object> deleteStock(Integer id) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         Goods goods = goodsService.findById(id);
@@ -204,7 +204,7 @@ public class GoodsAdminContrller {
      * @throws Exception
      */
     @RequestMapping("/saveStore")
-    @RequiresPermissions(value = {"期初在庫"})
+    @RequiresPermissions(value = {"期首在庫"})
     public Map<String, Object> saveStore(Integer id, Integer num, Float price) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         Goods goods = goodsService.findById(id);
