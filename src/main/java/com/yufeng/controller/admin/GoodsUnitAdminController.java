@@ -42,7 +42,7 @@ public class GoodsUnitAdminController {
      * @throws Exception
      */
     @RequestMapping("/listAll")
-    @RequiresPermissions(value = {"商品管理", "入荷入庫"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"商品管理", "仕入入庫"}, logical = Logical.OR)
     public Map<String, Object> listAll() throws Exception {
         List<GoodsUnit> goodsUnitList = goodsUnitService.listAll();
         Map<String, Object> resultMap = new HashMap<>();
@@ -59,7 +59,7 @@ public class GoodsUnitAdminController {
      * @throws Exception
      */
     @RequestMapping("/save")
-    @RequiresPermissions(value = {"商品管理", "入荷入庫"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"商品管理", "仕入入庫"}, logical = Logical.OR)
     public Map<String, Object> save(GoodsUnit goodsUnit) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         logService.save(new Log(Log.ADD_ACTION, "商品単位情報を追加" + goodsUnit));
@@ -77,7 +77,7 @@ public class GoodsUnitAdminController {
      * @throws Exception
      */
     @RequestMapping("/delete")
-    @RequiresPermissions(value = {"商品管理", "入荷入庫"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"商品管理", "仕入入庫"}, logical = Logical.OR)
     public Map<String, Object> delete(Integer id) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         logService.save(new Log(Log.DELETE_ACTION, "商品単位情報を削除" + goodsUnitService.findById(id)));  // ログを書き込む
