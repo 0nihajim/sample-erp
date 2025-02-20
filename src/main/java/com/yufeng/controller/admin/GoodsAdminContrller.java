@@ -44,7 +44,7 @@ public class GoodsAdminContrller {
      * 商品情報をページング検索
      */
     @RequestMapping("/list")
-    @RequiresPermissions(value = {"商品管理", "入荷入庫"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"商品管理", "仕入入庫"}, logical = Logical.OR)
     public Map<String, Object> list(Goods goods, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "rows", required = false) Integer rows) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         List<Goods> goodsList = goodsService.list(goods, page, rows, Direction.ASC, "id");
@@ -180,7 +180,7 @@ public class GoodsAdminContrller {
      * @throws Exception
      */
     @RequestMapping("/save")
-    @RequiresPermissions(value = {"商品管理", "入荷入庫"}, logical = Logical.OR)
+    @RequiresPermissions(value = {"商品管理", "仕入入庫"}, logical = Logical.OR)
     public Map<String, Object> save(Goods goods) throws Exception {
         if (goods.getId() != null) { // ログを書き込む
             logService.save(new Log(Log.UPDATE_ACTION, "商品情報を更新" + goods));
